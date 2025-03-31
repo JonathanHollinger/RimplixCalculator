@@ -19,6 +19,8 @@ class CheckTest
     assertTrue(Check.forContains(haystack, "Cat"));
     
     assertFalse(Check.forContains(haystack, "Aardvark"));
+    assertTrue(true);
+    //Testing how pushing would work
   }
 
   @Test
