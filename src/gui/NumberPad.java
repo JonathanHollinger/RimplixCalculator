@@ -38,6 +38,7 @@ public class NumberPad extends    JPanel
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_7, 0), "7");
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_8, 0), "8");
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_9, 0), "9");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_I, 0), "i");
 
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), "\u232B");
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_C, 0), "C");
@@ -67,5 +68,6 @@ public class NumberPad extends    JPanel
         addButton("\u232B");
         addButton("0");
         addButton("C");
+        addButton("i");
     }
 }
