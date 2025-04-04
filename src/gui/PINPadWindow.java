@@ -22,14 +22,18 @@ public class PINPadWindow extends JFrame
         super();
         setupLayout();
         pack();
-        setResizable(false);
+        setResizable(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
     
     private void setupLayout()
     {
-      setSize(300, 300); 
-      setTitle("ATM");        
+      // ImageIcon img = new ImageIcon("media/iconRmplex.png");
+      // setIconImage(img.getImage());
+      
+      setSize(600, 500); 
+      setTitle("RimpleX");
+      
 
       Container contentPane = getContentPane();
       contentPane.setLayout(new BorderLayout());

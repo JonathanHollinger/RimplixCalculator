@@ -20,6 +20,7 @@ public class Display extends    JLabel
         setBorder(BorderFactory.createEtchedBorder());
         contents = "";
         updateDisplay();
+
     }
 
     public void actionPerformed(ActionEvent ae)
@@ -29,16 +30,19 @@ public class Display extends    JLabel
         if (ac.equals(CLEAR))
         {
             contents = "";
-            setText("Enter your PIN");
+            setText("Temporary");
+            // stringStorage.clear();
         }
         else if (ac.equals(ERASE_TO_THE_LEFT)) 
         {
             if (!contents.equals(""))
                 contents = contents.substring(0, contents.length()-1);
+                // stringStorage.remove();
         }
         else
         {
             contents += ac;
+            // stringStorage.add(ac);
         }
         updateDisplay();
     }
@@ -52,11 +56,8 @@ public class Display extends    JLabel
         }
         else 
         {
-            String    asterisks = "";
-            
-            for (int i=0; i<contents.length(); i++) asterisks += "*";
             setForeground(Color.RED);            
-            setText(asterisks);
+            setText(contents);
         }
     }
 }
