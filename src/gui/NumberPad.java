@@ -40,8 +40,23 @@ public class NumberPad extends    JPanel
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_9, 0), "9");
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_I, 0), "i");
 
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), "\u232B");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), "←");
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_C, 0), "C");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_DIVIDE, 0), "÷");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_PLUS, 0), "+");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, 0), "-");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_X, 0), "x");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_R, 0), "R");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_EQUALS, 0), "=");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, 0), ".");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT_PARENTHESIS, 0), "(");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT_PARENTHESIS, 0), ")");
+        
+        
+
+
+        
+        
         setupLayout();
     }
 
@@ -62,12 +77,34 @@ public class NumberPad extends    JPanel
     
     private void setupLayout()
     {
-        setLayout(new GridLayout(4, 3));
+        setLayout(new GridLayout(5, 5));
         
-        for (int i=1; i<=9; i++) addButton(String.format("%1d", i)); // this works?
-        addButton("\u232B");
-        addButton("0");
+        addButton("±");
         addButton("C");
+        addButton("←");
+        addButton("+");
+        addButton("R");
+        addButton("7");
+        addButton("8");
+        addButton("9");
+        addButton("-");
+        addButton("Inv");
+        addButton("4");
+        addButton("5");
+        addButton("6");
+        addButton("x");
+        addButton("(");
+        addButton("1");
+        addButton("2");
+        addButton("3");
+        addButton("÷");
+        addButton(")");
+        addButton("0");
+        addButton("PHDR");
         addButton("i");
+        addButton("=");
+        addButton(".");
+        
+        
     }
 }

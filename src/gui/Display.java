@@ -12,7 +12,7 @@ public class Display extends    JLabel
     private String contents;    
 
     private static final String     CLEAR = "C";
-    private static final String     ERASE_TO_THE_LEFT = "\u232B";    
+    private static final String     ERASE_TO_THE_LEFT = "←";    
 
     public Display()
     {
