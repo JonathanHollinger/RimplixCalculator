@@ -18,6 +18,7 @@ public class PINPadWindow extends JFrame
   private static final String HELP_MENU = "Help";
   private static final String VIEW_MENU = "View"; 
   private static final String ABOUT_MENU = "About"; 
+  private static final String CPLANE_MENU = "Complex Plane"; 
   
 
   /**
@@ -45,10 +46,12 @@ public class PINPadWindow extends JFrame
     JMenuItem exitItem = new JMenuItem(EXIT_ITEM);
     JMenuItem aboutItem = new JMenuItem(ABOUT_MENU);
     JMenuItem helpItem = new JMenuItem(HELP_MENU);
+    JMenuItem cPlane = new JMenuItem(CPLANE_MENU);
     exitItem.addActionListener(e -> System.exit(0));
     fileMenu.add(exitItem);
     helpMenu.add(aboutItem);
     helpMenu.add(helpItem);
+    viewMenu.add(cPlane);
     menuBar.add(fileMenu);
     menuBar.add(viewMenu);
     menuBar.add(helpMenu);
