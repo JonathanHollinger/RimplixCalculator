@@ -1,5 +1,7 @@
 package utilities;
 
+import java.util.ArrayList;
+
 /**
  * A utility class that performs checks of various kinds.
  * 
@@ -9,21 +11,47 @@ package utilities;
 public class Check
 {
   /**
-   * Check to see if an array of String objects contains a particular
-   * String.
+   * Check to see if an array of String objects contains a particular String.
    * 
-   * @param haystack  The array of String objects to search through
-   * @param needle The String object to search for
+   * @param haystack
+   *          The array of String objects to search through
+   * @param needle
+   *          The String object to search for
    * @return true if haystack contains needle; false otherwise
    */
-  public static boolean forContains(final String[] haystack, final String needle)
+  public static boolean isValid(String s)
   {
-    if (haystack == null) return false;
+    char[] c = s.toCharArray();
+    ArrayList<Character> stack = new ArrayList<>();
 
-    for (int i=0; i<haystack.length; i++)
+    if (c.length == 0 || c.length % 2 != 0)
     {
-      if (haystack[i].equals(needle)) return true;
+      return false;
     }
-    return false;
+
+    for (char bracket : c)
+    {
+      if (bracket == '(' || bracket == '[' || bracket == '{')
+      {
+        stack.add(bracket);
+      }
+      else if (bracket == ')' && !stack.isEmpty() && stack.get(stack.size() - 1) == '(')
+      {
+        stack.remove(stack.size() - 1);
+      }
+      else if (bracket == ']' && !stack.isEmpty() && stack.get(stack.size() - 1) == '[')
+      {
+        stack.remove(stack.size() - 1);
+      }
+      else if (bracket == '}' && !stack.isEmpty() && stack.get(stack.size() - 1) == '{')
+      {
+        stack.remove(stack.size() - 1);
+      }
+      else
+      {
+        return false;
+      }
+    }
+    return stack.isEmpty();
   }
 }

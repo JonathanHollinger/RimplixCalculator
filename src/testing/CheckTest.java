@@ -10,29 +10,61 @@ class CheckTest
 {
 
   @Test
-  void forContainsTest()
-  {
-    String[] haystack = {"Horse","Cow","Dog","Cat"};
-    assertTrue(Check.forContains(haystack, "Horse"));
-    assertTrue(Check.forContains(haystack, "Cow"));
-    assertTrue(Check.forContains(haystack, "Dog"));
-    assertTrue(Check.forContains(haystack, "Cat"));
-    
-    assertFalse(Check.forContains(haystack, "Aardvark"));
-    assertTrue(true);
-    //Testing how pushing would work
+  public void testEmptyString() {
+      assertFalse(Check.isValid(""), "Empty string should be invalid");
   }
 
   @Test
-  void forContainsTest_empty()
-  {
-    String[] haystack = {};
-    assertFalse(Check.forContains(haystack, "Aardvark"));
+  public void testSinglePairParentheses() {
+      assertTrue(Check.isValid("()"));
   }
 
   @Test
-  void forContainsTest_null()
-  {
-    assertFalse(Check.forContains(null, "Aardvark"));
+  public void testSinglePairBrackets() {
+      assertTrue(Check.isValid("[]"));
+  }
+
+  @Test
+  public void testSinglePairBraces() {
+      assertTrue(Check.isValid("{}"));
+  }
+
+  @Test
+  public void testMismatchedPairs() {
+      assertFalse(Check.isValid("(]"));
+      assertFalse(Check.isValid("[}"));
+      assertFalse(Check.isValid("{)"));
+  }
+
+  @Test
+  public void testUnmatchedOpenings() {
+      assertFalse(Check.isValid("("));
+      assertFalse(Check.isValid("[["));
+      assertFalse(Check.isValid("{{{"));
+  }
+
+  @Test
+  public void testUnmatchedClosings() {
+      assertFalse(Check.isValid(")"));
+      assertFalse(Check.isValid("]]"));
+      assertFalse(Check.isValid("}}}"));
+  }
+
+  @Test
+  public void testNestedValid() {
+      assertTrue(Check.isValid("({[]})"));
+      assertTrue(Check.isValid("(([]))"));
+  }
+
+  @Test
+  public void testNestedInvalid() {
+      assertFalse(Check.isValid("({[})"));
+      assertFalse(Check.isValid("([)]"));
+  }
+
+  @Test
+  public void testOddLength() {
+      assertFalse(Check.isValid("(()"));
+      assertFalse(Check.isValid("{[()]}("));
   }
 }
