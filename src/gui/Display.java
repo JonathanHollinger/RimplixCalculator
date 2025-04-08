@@ -10,7 +10,7 @@ public class Display extends JPanel implements ActionListener
 {
   private static final long serialVersionUID = 1L;
   private String expression; // Top-left: completed expression so far
-  private String parantheses; // String for only parenthesis for check
+  private String parentheses; // String for only parenthesis for check
   private String contents; // Bottom-right: current input
   private JLabel expressionLabel; // Labels for display
   private JLabel inputLabel; // Labels for display
@@ -25,7 +25,7 @@ public class Display extends JPanel implements ActionListener
   public Display()
   {
     expression = "";
-    parantheses = "";
+    parentheses = "";
     contents = "";
     
     setLayout(new BorderLayout());
@@ -53,16 +53,21 @@ public class Display extends JPanel implements ActionListener
         case CLEAR -> {
             contents = "";
             expression = "";
+            parentheses = "";
         }
         case RightP -> {
-          parantheses += RightP;
-          if(Check.isValid(parantheses)) {
+          parentheses += RightP;
+          if(Check.isValid(parentheses)) {
             contents = contents.substring(1, contents.length());
+          } else {
+            parentheses = parentheses.substring(0, parentheses.length() - 1);
           }
       }
         case LeftP -> {
-          parantheses += LeftP;
-          contents = LeftP;
+          if(parentheses.length() < 1) {
+            parentheses += LeftP;
+            contents = LeftP;
+          }
       }
         case ERASE_TO_THE_LEFT -> {
             if (!contents.isEmpty()) {
@@ -77,7 +82,7 @@ public class Display extends JPanel implements ActionListener
         default -> {
             if (ac.length() == 1 && Character.isDigit(ac.charAt(0))) {
                 contents += ac;
-            } else if ((ac.equals("+") || ac.equals("-") || ac.equals("x") || ac.equals("÷")) && Check.isValid(parantheses)) {
+            } else if ((ac.equals("+") || ac.equals("-") || ac.equals("x") || ac.equals("÷")) && Check.isValid(parentheses)) {
                 if (!contents.isEmpty()) {
                     expression += contents + " " + ac + " ";
                     contents = "";
