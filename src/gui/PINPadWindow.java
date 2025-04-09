@@ -8,37 +8,65 @@ import javax.swing.*;
  */
 public class PINPadWindow extends JFrame
 {
-  
-    /**
-   * 
-   */
+
+  /**
+  * 
+  */
   private static final long serialVersionUID = 1L;
+  private static final String EXIT_ITEM = "Exit";
+  private static final String FILE_MENU = "File";
+  private static final String HELP_MENU = "Help";
+  private static final String VIEW_MENU = "View"; 
+  private static final String ABOUT_MENU = "About"; 
+  private static final String CPLANE_MENU = "Complex Plane"; 
+  
 
-    /**
-     * Default Constructor.
-     */
-    public PINPadWindow()
-    {
-        super();
-        setupLayout();
-        pack();
-        setResizable(false);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    }
-    
-    private void setupLayout()
-    {
-      setSize(300, 300); 
-      setTitle("ATM");        
+  /**
+   * Default Constructor.
+   */
+  public PINPadWindow()
+  {
+    super();
+    setupLayout();
+    pack();
+    setResizable(true);
+    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+  }
 
-      Container contentPane = getContentPane();
-      contentPane.setLayout(new BorderLayout());
+  private void setupLayout()
+  {
+    // ImageIcon img = new ImageIcon("media/iconRmplex.png");
+    // setIconImage(img.getImage());
+    JMenuBar menuBar = new JMenuBar();
+    setJMenuBar(menuBar);
 
-      Display display = new Display();        
-      contentPane.add(display, BorderLayout.NORTH);
-      
-      NumberPad numberPad = new NumberPad(display);
-      contentPane.add(numberPad, BorderLayout.CENTER);
-    }
+    JMenu fileMenu = new JMenu(FILE_MENU);
+    JMenu viewMenu = new JMenu(VIEW_MENU);
+    JMenu helpMenu = new JMenu(HELP_MENU);
+    JMenuItem exitItem = new JMenuItem(EXIT_ITEM);
+    JMenuItem aboutItem = new JMenuItem(ABOUT_MENU);
+    JMenuItem helpItem = new JMenuItem(HELP_MENU);
+    JMenuItem cPlane = new JMenuItem(CPLANE_MENU);
+    exitItem.addActionListener(e -> System.exit(0));
+    fileMenu.add(exitItem);
+    helpMenu.add(aboutItem);
+    helpMenu.add(helpItem);
+    viewMenu.add(cPlane);
+    menuBar.add(fileMenu);
+    menuBar.add(viewMenu);
+    menuBar.add(helpMenu);
+
+    setSize(600, 500);
+    setTitle("RimpleX");
+
+    Container contentPane = getContentPane();
+    contentPane.setLayout(new BorderLayout());
+
+    Display display = new Display();
+    contentPane.add(display, BorderLayout.NORTH);
+
+    NumberPad numberPad = new NumberPad(display);
+    contentPane.add(numberPad, BorderLayout.CENTER);
+  }
 
 }
