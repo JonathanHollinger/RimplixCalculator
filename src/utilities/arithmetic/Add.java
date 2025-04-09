@@ -1,18 +1,22 @@
 package utilities.arithmetic;
 
+import utilities.ComplexNums;
+
 public class Add
 {
-	int var1;
-	int var2;
+	ComplexNums var1;
+	ComplexNums var2;
 
-	public Add(int variableOne, int variableTwo)
+	public Add(ComplexNums variableOne, ComplexNums variableTwo)
 	{
 		var1 = variableOne;
 		var2 = variableTwo;
 	}
 
-	public int evaluate()
+	public double evaluate()
 	{
-		return var1 + var2;
+		double result = 0;
+
+		return result;
 	}
 }
