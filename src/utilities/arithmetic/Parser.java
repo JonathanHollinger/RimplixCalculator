@@ -1,0 +1,79 @@
+package utilities.arithmetic;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+public abstract class Parser
+{
+
+	public enum Expression
+	{
+		ADD, SUBTRACT, MULTIPLY, DIVIDE, LEFT_PAREN, RIGHT_PAREN, NUMBER
+	}
+
+	public static List<Token> parse(BufferedReader in) throws IOException
+	{
+		List<Token> tokens = new ArrayList<>();
+		int ch;
+		boolean hasBuffered = false;
+		char bufferedChar = 0;
+
+		while ((ch = hasBuffered ? bufferedChar : in.read()) != -1)
+		{
+			char token = (char) ch;
+			hasBuffered = false;
+
+			if (Character.isWhitespace(token))
+			{
+				continue;
+			}
+
+			switch (token)
+			{
+			case '(':
+				tokens.add(new Token(Expression.LEFT_PAREN, null));
+				break;
+			case ')':
+				tokens.add(new Token(Expression.RIGHT_PAREN, null));
+				break;
+			case '+':
+				tokens.add(new Token(Expression.ADD, null));
+				break;
+			case '-':
+				tokens.add(new Token(Expression.SUBTRACT, null));
+				break;
+			case '*':
+				tokens.add(new Token(Expression.MULTIPLY, null));
+				break;
+			case '/':
+				tokens.add(new Token(Expression.DIVIDE, null));
+				break;
+			default:
+				if (Character.isDigit(token))
+				{
+					StringBuilder number = new StringBuilder();
+					number.append(token);
+					while ((ch = in.read()) != -1 && Character.isDigit((char) ch))
+					{
+						number.append((char) ch);
+					}
+					tokens.add(new Token(Expression.NUMBER, number.toString()));
+
+					// Buffer the non-digit character for the next loop
+					if (ch != -1)
+					{
+						hasBuffered = true;
+						bufferedChar = (char) ch;
+					}
+				}
+				break;
+			}
+		}
+
+		in.close();
+		return tokens;
+	}
+
+}
