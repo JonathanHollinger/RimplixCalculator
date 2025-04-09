@@ -21,6 +21,7 @@ public class Display extends JPanel implements ActionListener
   private static final String SIGN_TOGGLE = "±";
   private static final String LeftP = "(";
   private static final String RightP = ")";
+  private static final String EQUALS = "=";
 
   public Display()
   {
@@ -65,7 +66,6 @@ public class Display extends JPanel implements ActionListener
           }
           if(Check.isValid(parentheses)) {
             contents = contents.substring(0, index) + contents.substring(index + 1, contents.length());
-            parentheses = "";
           } else {
             parentheses = parentheses.substring(0, parentheses.length() - 1);
           }
@@ -86,6 +86,9 @@ public class Display extends JPanel implements ActionListener
             if (canAddDecimalPoint()) contents += ".";
         }
         case "i" -> contents += "i";
+        case EQUALS -> {
+          expression += contents + EQUALS + "result";
+        }
         default -> {
             if (ac.length() == 1 && Character.isDigit(ac.charAt(0))) {
                 contents += ac;
@@ -93,6 +96,7 @@ public class Display extends JPanel implements ActionListener
                 if (!contents.isEmpty()) {
                     expression += contents + " " + ac + " ";
                     contents = "";
+                    parentheses = "";
                 }
             } else {
                 contents += ac; // fallback
