@@ -66,7 +66,7 @@ public class Display extends JPanel implements ActionListener
         case LeftP -> {
           if(parentheses.length() < 1) {
             parentheses += LeftP;
-            contents = LeftP;
+            contents += LeftP;
           }
       }
         case ERASE_TO_THE_LEFT -> {
