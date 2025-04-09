@@ -62,7 +62,7 @@ public class Evaluator
 
 			case Parser.Expression.NUMBER:
 				// Handle number token
-				currentValue = new ComplexNums(Integer.parseInt(tok.value));
+				currentValue = new ComplexNums(Double.parseDouble(tok.value), 0.0);
 				break;
 
 			case Parser.Expression.ADD:
