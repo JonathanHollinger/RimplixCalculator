@@ -9,14 +9,16 @@ import utilities.Check;
 public class Display extends JPanel implements ActionListener
 {
   private static final long serialVersionUID = 1L;
+  private String problem;
   private String expression; // Top-left: completed expression so far
   private String parentheses; // String for only parenthesis for check
   private String contents; // Bottom-right: current input
   private JLabel expressionLabel; // Labels for display
   private JLabel inputLabel; // Labels for display
 
-  //Constants for buttons
+  // Constants for buttons
   private static final String CLEAR = "C";
+  private static final String I = "i";
   private static final String ERASE_TO_THE_LEFT = "←";
   private static final String SIGN_TOGGLE = "±";
   private static final String LeftP = "(";
@@ -25,23 +27,24 @@ public class Display extends JPanel implements ActionListener
 
   public Display()
   {
+    problem = "";
     expression = "";
     parentheses = "";
     contents = "";
-    
+
     setLayout(new BorderLayout());
     setBorder(BorderFactory.createEtchedBorder());
-    
-    //Label for top left of expression
+
+    // Label for top left of expression
     expressionLabel = new JLabel(" ", SwingConstants.LEFT);
     expressionLabel.setFont(new Font("Arial", Font.PLAIN, 14));
     expressionLabel.setForeground(Color.DARK_GRAY);
-    
-    //label for current bottom right
+
+    // label for current bottom right
     inputLabel = new JLabel("Enter a complex number", SwingConstants.RIGHT);
     inputLabel.setFont(new Font("Arial", Font.BOLD, 20));
     inputLabel.setForeground(Color.GRAY);
-    
+
     add(expressionLabel, BorderLayout.NORTH);
     add(inputLabel, BorderLayout.SOUTH);
   }
@@ -51,57 +54,83 @@ public class Display extends JPanel implements ActionListener
     String ac = ae.getActionCommand();
     int index = 0;
 
-    switch (ac) {
-        case CLEAR -> {
+    switch (ac)
+    {
+      case CLEAR -> {
+        problem = "";
+        contents = "";
+        expression = "";
+        parentheses = "";
+      }
+      case RightP -> {
+        parentheses += RightP;
+        for (int i = 0; i < contents.length(); i++)
+        {
+          if (contents.charAt(i) == '(')
+          {
+            index = i;
+          }
+        }
+        if (Check.isValid(parentheses))
+        {
+          problem += RightP;
+          contents = contents.substring(0, index)
+              + contents.substring(index + 1, contents.length());
+        }
+        else
+        {
+          parentheses = parentheses.substring(0, parentheses.length() - 1);
+        }
+      }
+      case LeftP -> {
+        if (parentheses.length() < 1)
+        {
+          problem += LeftP;
+          parentheses += LeftP;
+          contents += LeftP;
+        }
+      }
+      case ERASE_TO_THE_LEFT -> {
+        if (!contents.isEmpty())
+        {
+          contents = contents.substring(0, contents.length() - 1);
+        }
+      }
+      case SIGN_TOGGLE -> toggleSign();
+      case "." -> {
+        if (canAddDecimalPoint())
+          contents += ".";
+      }
+      case I -> { 
+        problem += I;
+        contents += I;
+      }
+      case EQUALS -> {
+        expression += contents + EQUALS + problem;
+      }
+      default -> {
+        if (ac.length() == 1 && Character.isDigit(ac.charAt(0)))
+        {
+          problem += ac;
+          contents += ac;
+        }
+        else if ((ac.equals("+") || ac.equals("-") || ac.equals("x") || ac.equals("÷"))
+            && Check.isValid(parentheses))
+        {
+          if (!contents.isEmpty())
+          {
+            problem += ac;
+            expression += contents + " " + ac + " ";
             contents = "";
-            expression = "";
             parentheses = "";
+          }
         }
-        case RightP -> {
-          parentheses += RightP;
-          for(int i = 0; i < contents.length(); i++) {
-            if(contents.charAt(i) == '(') {
-              index = i;
-            }
-          }
-          if(Check.isValid(parentheses)) {
-            contents = contents.substring(0, index) + contents.substring(index + 1, contents.length());
-          } else {
-            parentheses = parentheses.substring(0, parentheses.length() - 1);
-          }
+        else
+        {
+          contents += ac; // fallback
+          problem += ac;
+        }
       }
-        case LeftP -> {
-          if(parentheses.length() < 1) {
-            parentheses += LeftP;
-            contents += LeftP;
-          }
-      }
-        case ERASE_TO_THE_LEFT -> {
-            if (!contents.isEmpty()) {
-                contents = contents.substring(0, contents.length() - 1);
-            }
-        }
-        case SIGN_TOGGLE -> toggleSign();
-        case "." -> {
-            if (canAddDecimalPoint()) contents += ".";
-        }
-        case "i" -> contents += "i";
-        case EQUALS -> {
-          expression += contents + EQUALS + "result";
-        }
-        default -> {
-            if (ac.length() == 1 && Character.isDigit(ac.charAt(0))) {
-                contents += ac;
-            } else if ((ac.equals("+") || ac.equals("-") || ac.equals("x") || ac.equals("÷")) && Check.isValid(parentheses)) {
-                if (!contents.isEmpty()) {
-                    expression += contents + " " + ac + " ";
-                    contents = "";
-                    parentheses = "";
-                }
-            } else {
-                contents += ac; // fallback
-            }
-        }
     }
 
     updateDisplay();
@@ -118,7 +147,7 @@ public class Display extends JPanel implements ActionListener
     }
 
     // Handle different formats of complex numbers
-    if (contents.contains("i"))
+    if (contents.contains(I))
     {
       // Complex number with imaginary part
 
@@ -178,24 +207,31 @@ public class Display extends JPanel implements ActionListener
     String currentNumberPart = contents.substring(lastOperatorIndex + 1);
 
     // If there's already a decimal point or an 'i' in this part, don't add another decimal
-    return !currentNumberPart.contains(".") && !currentNumberPart.contains("i");
+    return !currentNumberPart.contains(".") && !currentNumberPart.contains(I);
   }
 
-  private void updateDisplay() {
+  private void updateDisplay()
+  {
     // Update top expression label
     expressionLabel.setText(expression.isEmpty() ? " " : expression);
 
     // Update input label
-    if (contents.isEmpty()) {
-        inputLabel.setForeground(Color.GRAY);
-        inputLabel.setText("Enter a complex number");
-    } else {
-        inputLabel.setForeground(Color.BLACK);
-        if (contents.contains("i")) {
-            inputLabel.setText("<html>" + contents.replace("i", "<i>i</i>") + "</html>");
-        } else {
-            inputLabel.setText(contents);
-        }
+    if (contents.isEmpty())
+    {
+      inputLabel.setForeground(Color.GRAY);
+      inputLabel.setText("Enter a complex number");
     }
-}
+    else
+    {
+      inputLabel.setForeground(Color.BLACK);
+      if (contents.contains("i"))
+      {
+        inputLabel.setText("<html>" + contents.replace("i", "<i>i</i>") + "</html>");
+      }
+      else
+      {
+        inputLabel.setText(contents);
+      }
+    }
+  }
 }
