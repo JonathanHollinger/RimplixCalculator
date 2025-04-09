@@ -48,6 +48,7 @@ public class Display extends JPanel implements ActionListener
   public void actionPerformed(ActionEvent ae)
   {
     String ac = ae.getActionCommand();
+    int index = 0;
 
     switch (ac) {
         case CLEAR -> {
@@ -57,8 +58,14 @@ public class Display extends JPanel implements ActionListener
         }
         case RightP -> {
           parentheses += RightP;
+          for(int i = 0; i < contents.length(); i++) {
+            if(contents.charAt(i) == '(') {
+              index = i;
+            }
+          }
           if(Check.isValid(parentheses)) {
-            contents = contents.substring(1, contents.length());
+            contents = contents.substring(0, index) + contents.substring(index + 1, contents.length());
+            parentheses = "";
           } else {
             parentheses = parentheses.substring(0, parentheses.length() - 1);
           }
