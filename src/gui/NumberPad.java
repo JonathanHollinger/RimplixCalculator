@@ -74,6 +74,11 @@ public class NumberPad extends    JPanel
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = x;
         c.gridy = y;
+        c.weightx = 1.0;
+        c.weighty = 1.0;
+        c.fill = GridBagConstraints.BOTH;
+        c.gridwidth = 1;
+        c.gridheight = 1;
         add(button, c);
 
     }
@@ -90,7 +95,11 @@ public class NumberPad extends    JPanel
         c.gridx = x;
         c.gridy = y;
         c.gridwidth = 2;
-        c.ipadx = 78;
+        c.weightx = 1.0;
+        c.weighty = 1.0;
+        c.fill = GridBagConstraints.BOTH;
+        c.gridwidth = 2;
+        c.gridheight = 1;
         add(button, c);
 
     }

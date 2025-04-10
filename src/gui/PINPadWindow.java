@@ -29,8 +29,8 @@ public class PINPadWindow extends JFrame
     super();
     setupLayout();
     pack();
-    setResizable(false);
-    setSize(400, 300);
+    setResizable(true);
+    setSize(300, 400);
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
   }
 
