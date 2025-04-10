@@ -52,7 +52,6 @@ public class Display extends JPanel implements ActionListener
   public void actionPerformed(ActionEvent ae)
   {
     String ac = ae.getActionCommand();
-    int index = 0;
 
     switch (ac)
     {
@@ -62,38 +61,39 @@ public class Display extends JPanel implements ActionListener
         expression = "";
         parentheses = "";
       }
-      case RightP -> {
-        parentheses += RightP;
-        for (int i = 0; i < contents.length(); i++)
-        {
-          if (contents.charAt(i) == '(')
-          {
-            index = i;
-          }
-        }
-        if (Check.isValid(parentheses))
-        {
-          problem += RightP;
-          contents = contents.substring(0, index)
-              + contents.substring(index + 1, contents.length());
-        }
-        else
-        {
-          parentheses = parentheses.substring(0, parentheses.length() - 1);
-        }
-      }
       case LeftP -> {
-        if (parentheses.length() < 1)
-        {
-          problem += LeftP;
-          parentheses += LeftP;
-          contents += LeftP;
+        // Allow multiple sets of parentheses for nested expressions
+        problem += LeftP;
+        parentheses += LeftP;
+        contents += LeftP;
+      }
+      case RightP -> {
+        // Only add closing parenthesis if there's a matching opening one
+        if (countChar(parentheses, '(') > countChar(parentheses, ')')) {
+          problem += RightP;
+          contents += RightP;
+          parentheses += RightP;
+          
+          // After adding a closing parenthesis, check if the parentheses are balanced
+          // for the current expression (not necessarily all parentheses)
+          if (areParenthesesBalanced(contents)) {
+              // Remove all layers of parentheses
+              while (contents.startsWith("(") && contents.endsWith(")") && 
+                     areParenthesesBalanced(contents.substring(1, contents.length()-1))) {
+                  contents = contents.substring(1, contents.length()-1);
+              }
+          }
         }
       }
       case ERASE_TO_THE_LEFT -> {
-        if (!contents.isEmpty())
-        {
+        if (!contents.isEmpty()) {
+          char lastChar = contents.charAt(contents.length() - 1);
           contents = contents.substring(0, contents.length() - 1);
+          
+          // Also update parentheses tracking if deleting a parenthesis
+          if (lastChar == '(' || lastChar == ')') {
+            parentheses = parentheses.substring(0, parentheses.length() - 1);
+          }
         }
       }
       case SIGN_TOGGLE -> toggleSign();
@@ -106,7 +106,10 @@ public class Display extends JPanel implements ActionListener
         contents += I;
       }
       case EQUALS -> {
-        expression += contents + EQUALS + problem;
+        // Only evaluate if all parentheses are balanced
+        if (areParenthesesBalanced(parentheses)) {
+          expression += contents + EQUALS + problem;
+        }
       }
       default -> {
         if (ac.length() == 1 && Character.isDigit(ac.charAt(0)))
@@ -134,6 +137,96 @@ public class Display extends JPanel implements ActionListener
     }
 
     updateDisplay();
+  }
+
+  /**
+   * Checks if the current expression enclosed in parentheses is complete
+   * (has balanced parentheses for the immediate expression)
+   */
+  private boolean isCurrentExpressionComplete() {
+    // Count open and close parentheses
+    int openCount = 0;
+    int closeCount = 0;
+    
+    for (int i = 0; i < contents.length(); i++) {
+      if (contents.charAt(i) == '(') {
+        openCount++;
+      } else if (contents.charAt(i) == ')') {
+        closeCount++;
+        // If we've balanced the outermost parentheses
+        if (openCount == closeCount) {
+          return true;
+        }
+      }
+    }
+    
+    return false;
+  }
+  
+  /**
+   * Counts occurrences of a character in a string
+   */
+  private int countChar(String str, char c) {
+    int count = 0;
+    for (int i = 0; i < str.length(); i++) {
+      if (str.charAt(i) == c) {
+        count++;
+      }
+    }
+    return count;
+  }
+
+  /**
+   * Checks if parentheses in a string are balanced
+   */
+  private boolean areParenthesesBalanced(String str) {
+    int balance = 0;
+    for (int i = 0; i < str.length(); i++) {
+      if (str.charAt(i) == '(') {
+        balance++;
+      } else if (str.charAt(i) == ')') {
+        balance--;
+      }
+      if (balance < 0) {
+        return false; // Closing without opening
+      }
+    }
+    return balance == 0; // All opened parentheses are closed
+  }
+
+  /**
+   * Removes outermost matching parentheses from a string
+   * E.g., "(3+4i)" becomes "3+4i"
+   */
+  private String stripOutermostParentheses(String str) {
+    // Find the outermost matching pair of parentheses
+    int openingIndex = -1;
+    int closingIndex = -1;
+    int balance = 0;
+    
+    for (int i = 0; i < str.length(); i++) {
+      if (str.charAt(i) == '(') {
+        if (openingIndex == -1) {
+          openingIndex = i;
+        }
+        balance++;
+      } else if (str.charAt(i) == ')') {
+        balance--;
+        if (balance == 0 && openingIndex != -1) {
+          closingIndex = i;
+          break;
+        }
+      }
+    }
+    
+    if (openingIndex == -1 || closingIndex == -1) {
+      return str; // No matching pair found
+    }
+    
+    // Return the content without the outermost parentheses
+    return str.substring(0, openingIndex) + 
+           str.substring(openingIndex + 1, closingIndex) +
+           str.substring(closingIndex + 1);
   }
 
   /**
