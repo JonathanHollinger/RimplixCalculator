@@ -56,7 +56,6 @@ public class NumberPad extends    JPanel
 
 
         
-        
         setupLayout();
     }
 

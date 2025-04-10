@@ -39,6 +39,11 @@ public class Display extends JPanel implements ActionListener
     expressionLabel = new JLabel(" ", SwingConstants.LEFT);
     expressionLabel.setFont(new Font("Arial", Font.PLAIN, 14));
     expressionLabel.setForeground(Color.DARK_GRAY);
+    
+    ImageIcon img = new ImageIcon("/s25team3d/src/media/logoRimplex.png");
+    expressionLabel.setIcon(img);
+    
+    
 
     // label for current bottom right
     inputLabel = new JLabel("Enter a complex number", SwingConstants.RIGHT);
@@ -47,6 +52,8 @@ public class Display extends JPanel implements ActionListener
 
     add(expressionLabel, BorderLayout.NORTH);
     add(inputLabel, BorderLayout.SOUTH);
+    
+    
   }
 
   public void actionPerformed(ActionEvent ae)

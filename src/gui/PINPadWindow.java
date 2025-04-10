@@ -36,8 +36,6 @@ public class PINPadWindow extends JFrame
 
   private void setupLayout()
   {
-    // ImageIcon img = new ImageIcon("media/iconRmplex.png");
-    // setIconImage(img.getImage());
     JMenuBar menuBar = new JMenuBar();
     setJMenuBar(menuBar);
 
@@ -68,6 +66,9 @@ public class PINPadWindow extends JFrame
 
     NumberPad numberPad = new NumberPad(display);
     contentPane.add(numberPad, BorderLayout.CENTER);
+    
+//    ImageIcon img = new ImageIcon("/s25team3d/src/media/iconRimplex.png");
+//    setIconImage(img.getImage());
   }
 
 }

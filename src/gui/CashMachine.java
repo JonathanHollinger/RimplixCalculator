@@ -25,7 +25,7 @@ public class CashMachine implements Runnable
     public void run()
     {
       PINPadWindow window = new PINPadWindow();
-      window.setTitle("ATM");        
+      window.setTitle("RimpleX");        
       window.setVisible(true);
     }
 }
