@@ -1,6 +1,9 @@
 package gui;
 
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+
 import javax.swing.*;
 
 /**
@@ -45,6 +48,7 @@ public class PINPadWindow extends JFrame
     JMenuItem exitItem = new JMenuItem(EXIT_ITEM);
     JMenuItem aboutItem = new JMenuItem(ABOUT_MENU);
     JMenuItem helpItem = new JMenuItem(HELP_MENU);
+    helpItem.addActionListener(e -> runHelp());
     JMenuItem cPlane = new JMenuItem(CPLANE_MENU);
     exitItem.addActionListener(e -> System.exit(0));
     fileMenu.add(exitItem);
@@ -67,8 +71,20 @@ public class PINPadWindow extends JFrame
     NumberPad numberPad = new NumberPad(display);
     contentPane.add(numberPad, BorderLayout.CENTER);
     
-//    ImageIcon img = new ImageIcon("/s25team3d/src/media/iconRimplex.png");
-//    setIconImage(img.getImage());
+    ImageIcon img = new ImageIcon("src/media/iconRimplex.png");
+    setIconImage(img.getImage());
   }
-
+  
+  private void runHelp() {
+    File file = new File("src/media/help.html");
+    try
+    {
+      Desktop.getDesktop().browse(file.toURI());
+    }
+    catch (IOException e)
+    {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
 }
