@@ -22,6 +22,7 @@ public class ComplexNums implements Nums
    * double constructor.
    * 
    * @param val val
+   * @param iMult i modifier
    */
   public ComplexNums(final double val, final double iMult)
   {
@@ -82,7 +83,6 @@ public class ComplexNums implements Nums
     }
   }
 
-  @Override
   public Nums mult(final Nums other)
   {
     if (other == null)
@@ -155,9 +155,9 @@ public class ComplexNums implements Nums
   {
     if (getVal() % 1 == 0)
     {
-      return (int) getVal() + "i";
+      return (int) getIConst() + "i";
     }
-    return getVal() + "i";
+    return getVal() + getIConst() + "i";
   }
 
 }

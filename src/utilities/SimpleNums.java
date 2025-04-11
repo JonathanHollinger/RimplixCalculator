@@ -6,7 +6,7 @@ package utilities;
 public class SimpleNums implements Nums 
 {
   private double val;
-  
+
   /**
    * default constructor.
    */
@@ -14,7 +14,7 @@ public class SimpleNums implements Nums
   {
     val = 0;
   }
-  
+
   /**
    * double constructor.
    * @param val val
@@ -23,7 +23,7 @@ public class SimpleNums implements Nums
   {
     this.val = val;
   }
-  
+
   /**
    * int constructor.
    * @param val val
@@ -32,7 +32,7 @@ public class SimpleNums implements Nums
   {
     this.val = (double) val;
   }
-  
+
   /**
    * basic getter.
    * @return val
@@ -40,13 +40,57 @@ public class SimpleNums implements Nums
   public final double getVal() 
   {
     return val;
-    
+
   }
 
-  @Override
-  public Nums mult(final Nums other)
-  {
+  // LOTS of functions for flexible handling.
+  public Nums mult(final SimpleNums other) {
     return new SimpleNums(this.getVal() * other.getVal());
   }
-  
+
+  public Nums add(final SimpleNums other) {
+    return new SimpleNums(this.getVal() + other.getVal());
+  }
+
+  public Nums sub(final SimpleNums other) {
+    return new SimpleNums(this.getVal() - other.getVal());
+  }
+
+  public Nums div(final SimpleNums other) {
+    return new SimpleNums(this.getVal() / other.getVal());
+  }
+
+  // --- Overloaded methods for double ---
+  public Nums mult(final double other) {
+    return new SimpleNums(this.getVal() * other);
+  }
+
+  public Nums add(final double other) {
+    return new SimpleNums(this.getVal() + other);
+  }
+
+  public Nums sub(final double other) {
+    return new SimpleNums(this.getVal() - other);
+  }
+
+  public Nums div(final double other) {
+    return new SimpleNums(this.getVal() / other);
+  }
+
+  // --- Overloaded methods for int ---
+  public Nums mult(final int other) {
+    return new SimpleNums(this.getVal() * other);
+  }
+
+  public Nums add(final int other) {
+    return new SimpleNums(this.getVal() + other);
+  }
+
+  public Nums sub(final int other) {
+    return new SimpleNums(this.getVal() - other);
+  }
+
+  public Nums div(final int other) {
+    return new SimpleNums(this.getVal() / other);
+  }
 }
