@@ -120,7 +120,7 @@ public class NumberPad extends    JPanel
     addButton("8", 1, 1);
     addButton("9", 2, 1);
     addButton("-", 3, 1);
-    addButton("Inv", 4, 1);
+    // addButton("Inv", 4, 1);
     addButton("4", 0, 2);
     addButton("5", 1, 2);
     addButton("6", 2, 2);
