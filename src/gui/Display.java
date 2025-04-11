@@ -127,7 +127,7 @@ public class Display extends JPanel implements ActionListener
           {
             BufferedReader toParse = new BufferedReader(new StringReader(problem));
             Evaluator eval = new Evaluator(Parser.parse(toParse));
-            expression += contents + EQUALS + eval.result();
+            expression += " " + contents + EQUALS + " " +  eval.result();
             problem = eval.result().toString();
             evaluatedExpression = true;
             contents = "";
@@ -142,12 +142,18 @@ public class Display extends JPanel implements ActionListener
       default -> {
         if (ac.length() == 1 && Character.isDigit(ac.charAt(0)))
         {
+          if(evaluatedExpression) {
+            evaluatedExpression = false;
+            expression = "";
+            problem = "";
+          }
           problem += ac;
           contents += ac;
         } else if ((ac.equals("+") || ac.equals("-") || ac.equals("x") || ac.equals("÷"))
             && evaluatedExpression) {
           expression = problem + " " + ac;
           problem += ac;
+          contents = "";
           evaluatedExpression = false;
         }
         else if ((ac.equals("+") || ac.equals("-") || ac.equals("x") || ac.equals("÷"))
