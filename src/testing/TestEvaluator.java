@@ -27,7 +27,7 @@ public class TestEvaluator
 			Evaluator evaluator = new Evaluator(tokens);
 			ComplexNums result = evaluator.result();
 
-			assertEquals(0.0, result.getMult(), 0.0001); // Ensure no imaginary part
+			assertEquals(0.0, result.getIConst(), 0.0001); // Ensure no imaginary part
 			assertEquals(10.0, result.getVal(), 0.0001); // 2 * 3 = 6 + 4 = 10
 		} catch (Exception e)
 		{
@@ -48,7 +48,7 @@ public class TestEvaluator
 			Evaluator evaluator = new Evaluator(tokens);
 			ComplexNums result = evaluator.result();
 
-			assertEquals(0.0, result.getMult(), 0.0001);
+			assertEquals(0.0, result.getIConst(), 0.0001);
 			assertEquals(18.0, result.getVal(), 0.0001);
 		} catch (Exception e)
 		{
@@ -69,7 +69,7 @@ public class TestEvaluator
 			Evaluator evaluator = new Evaluator(tokens);
 			ComplexNums result = evaluator.result();
 
-			assertEquals(0.0, result.getMult(), 0.0001);
+			assertEquals(0.0, result.getIConst(), 0.0001);
 			assertEquals(2.0, result.getVal(), 0.0001);
 		} catch (Exception e)
 		{
@@ -90,8 +90,29 @@ public class TestEvaluator
 			Evaluator evaluator = new Evaluator(tokens);
 			ComplexNums result = evaluator.result();
 
-			assertEquals(10.0, result.getMult(), 0.0001); // Imaginary part
+			assertEquals(10.0, result.getIConst(), 0.0001); // Imaginary part
 			assertEquals(-5.0, result.getVal(), 0.0001); // Real part
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			assert false : "Exception occurred during complex number evaluation";
+		}
+	}
+
+	@Test
+	public void testComplexEquation()
+	{
+		String expr = "(1 * 2i) * (6 - 3i)"; // Should evaluate to -5 + 10i
+		BufferedReader reader = new BufferedReader(new StringReader(expr));
+
+		try
+		{
+			List<Token> tokens = Parser.parse(reader);
+			Evaluator evaluator = new Evaluator(tokens);
+			ComplexNums result = evaluator.result();
+
+			assertEquals(12.0, result.getIConst(), 0.0001); // Imaginary part
+			assertEquals(6.0, result.getVal(), 0.0001); // Real part
 		} catch (Exception e)
 		{
 			e.printStackTrace();

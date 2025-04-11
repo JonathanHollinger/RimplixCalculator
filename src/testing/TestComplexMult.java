@@ -25,7 +25,7 @@ class TestComplexMult
     
     
     assertEquals(expected.getVal(), actual.getVal());
-    assertEquals(expected.getMult(), actual.getMult());
+    assertEquals(expected.getIConst(), actual.getIConst());
   }
   
 //  @Test
@@ -43,7 +43,7 @@ class TestComplexMult
 //    
 //    
 //    assertEquals(expected.getVal(), actual.getVal());
-//    assertEquals(expected.getMult(), actual.getMult());
+//    assertEquals(expected.getIConst(), actual.getIConst());
 //  }
 
 }

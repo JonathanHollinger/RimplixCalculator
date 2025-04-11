@@ -55,11 +55,11 @@ public class ComplexNums implements Nums
 
     if (other instanceof SimpleNums)
     {
-      return new ComplexNums(this.getMult(), this.getVal() + other.getVal());
+      return new ComplexNums(this.getIConst(), this.getVal() + other.getVal());
     } else
     {
       ComplexNums n = (ComplexNums) other;
-      double newMult = this.getMult() + n.getMult();
+      double newMult = this.getIConst() + n.getIConst();
       double newVal = this.getVal() + other.getVal();
       return new ComplexNums(newVal, newMult);
     }
@@ -78,7 +78,7 @@ public class ComplexNums implements Nums
     } else
     {
       ComplexNums n = (ComplexNums) other;
-      return this.add(new ComplexNums(n.getVal() * -1, n.getMult()));
+      return this.add(new ComplexNums(n.getVal() * -1, n.getIConst()));
     }
   }
 
@@ -93,14 +93,14 @@ public class ComplexNums implements Nums
     // Just needs to multiply the new value
     if (other instanceof SimpleNums)
     {
-      return new ComplexNums(this.getMult() * other.getVal(),
+      return new ComplexNums(this.getIConst() * other.getVal(),
           this.getVal() * other.getVal());
     } else // Needs to make a new simple number
     {
       ComplexNums n = (ComplexNums) other;
-      double newMult = (this.getMult() * n.getVal()) + this.getVal() * n.getMult();
+      double newMult = (this.getIConst() * n.getVal()) + this.getVal() * n.getIConst();
       double newVal = (this.getVal() * other.getVal())
-          + (this.getMult() * n.getMult() * -1);
+          + (this.getIConst() * n.getIConst() * -1);
       return new ComplexNums(newVal, newMult);
     }
   }
@@ -115,15 +115,15 @@ public class ComplexNums implements Nums
     if (other instanceof SimpleNums)
     {
       double divisor = other.getVal();
-      return new ComplexNums(this.getMult() / divisor, this.getVal() / divisor);
+      return new ComplexNums(this.getIConst() / divisor, this.getVal() / divisor);
     } else
     {
       ComplexNums n = (ComplexNums) other;
 
       double a = this.getVal();
-      double b = this.getMult();
+      double b = this.getIConst();
       double c = n.getVal();
-      double d = n.getMult();
+      double d = n.getIConst();
 
       double denominator = c * c + d * d;
 
@@ -139,7 +139,7 @@ public class ComplexNums implements Nums
    * 
    * @return mult
    */
-  public double getMult()
+  public double getIConst()
   {
     return this.iMult;
   }
