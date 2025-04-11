@@ -3,8 +3,10 @@ package gui;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import java.io.*;
 
 import utilities.Check;
+import utilities.arithmetic.*;
 
 public class Display extends JPanel implements ActionListener
 {
@@ -15,6 +17,7 @@ public class Display extends JPanel implements ActionListener
   private String contents; // Bottom-right: current input
   private JLabel expressionLabel; // Labels for display
   private JLabel inputLabel; // Labels for display
+  private boolean evaluatedExpression = false;
 
   // Constants for buttons
   private static final String CLEAR = "C";
@@ -39,8 +42,6 @@ public class Display extends JPanel implements ActionListener
     expressionLabel = new JLabel(" ", SwingConstants.LEFT);
     expressionLabel.setFont(new Font("Arial", Font.PLAIN, 14));
     expressionLabel.setForeground(Color.DARK_GRAY);
-    
-    
 
     // label for current bottom right
     inputLabel = new JLabel("Enter a complex number", SwingConstants.RIGHT);
@@ -49,8 +50,7 @@ public class Display extends JPanel implements ActionListener
 
     add(expressionLabel, BorderLayout.NORTH);
     add(inputLabel, BorderLayout.SOUTH);
-    
-    
+
   }
 
   public void actionPerformed(ActionEvent ae)
@@ -67,35 +67,45 @@ public class Display extends JPanel implements ActionListener
       }
       case LeftP -> {
         // Allow multiple sets of parentheses for nested expressions
+        if(evaluatedExpression) {
+          evaluatedExpression = false;
+          problem = "";
+          expression = "";
+        }
         problem += LeftP;
         parentheses += LeftP;
         contents += LeftP;
       }
       case RightP -> {
         // Only add closing parenthesis if there's a matching opening one
-        if (countChar(parentheses, '(') > countChar(parentheses, ')')) {
+        if (countChar(parentheses, '(') > countChar(parentheses, ')'))
+        {
           problem += RightP;
           contents += RightP;
           parentheses += RightP;
-          
+
           // After adding a closing parenthesis, check if the parentheses are balanced
           // for the current expression (not necessarily all parentheses)
-          if (areParenthesesBalanced(contents)) {
-              // Remove all layers of parentheses
-              while (contents.startsWith("(") && contents.endsWith(")") && 
-                     areParenthesesBalanced(contents.substring(1, contents.length()-1))) {
-                  contents = contents.substring(1, contents.length()-1);
-              }
+          if (areParenthesesBalanced(contents))
+          {
+            // Remove all layers of parentheses
+            while (contents.startsWith("(") && contents.endsWith(")")
+                && areParenthesesBalanced(contents.substring(1, contents.length() - 1)))
+            {
+              contents = contents.substring(1, contents.length() - 1);
+            }
           }
         }
       }
       case ERASE_TO_THE_LEFT -> {
-        if (!contents.isEmpty()) {
+        if (!contents.isEmpty())
+        {
           char lastChar = contents.charAt(contents.length() - 1);
           contents = contents.substring(0, contents.length() - 1);
-          
+
           // Also update parentheses tracking if deleting a parenthesis
-          if (lastChar == '(' || lastChar == ')') {
+          if (lastChar == '(' || lastChar == ')')
+          {
             parentheses = parentheses.substring(0, parentheses.length() - 1);
           }
         }
@@ -105,14 +115,28 @@ public class Display extends JPanel implements ActionListener
         if (canAddDecimalPoint())
           contents += ".";
       }
-      case I -> { 
+      case I -> {
         problem += I;
         contents += I;
       }
       case EQUALS -> {
         // Only evaluate if all parentheses are balanced
-        if (areParenthesesBalanced(parentheses)) {
-          expression += contents + EQUALS + problem;
+        if (areParenthesesBalanced(parentheses))
+        {
+          try
+          {
+            BufferedReader toParse = new BufferedReader(new StringReader(problem));
+            Evaluator eval = new Evaluator(Parser.parse(toParse));
+            expression += contents + EQUALS + eval.result();
+            problem = eval.result().toString();
+            evaluatedExpression = true;
+            contents = "";
+          }
+          catch (IOException e)
+          {
+            e.printStackTrace(); // or handle it more gracefully
+            expression += "Error: Unable to evaluate expression.";
+          }
         }
       }
       default -> {
@@ -120,6 +144,11 @@ public class Display extends JPanel implements ActionListener
         {
           problem += ac;
           contents += ac;
+        } else if ((ac.equals("+") || ac.equals("-") || ac.equals("x") || ac.equals("÷"))
+            && evaluatedExpression) {
+          expression = problem + " " + ac;
+          problem += ac;
+          evaluatedExpression = false;
         }
         else if ((ac.equals("+") || ac.equals("-") || ac.equals("x") || ac.equals("÷"))
             && Check.isValid(parentheses))
@@ -144,36 +173,45 @@ public class Display extends JPanel implements ActionListener
   }
 
   /**
-   * Checks if the current expression enclosed in parentheses is complete
-   * (has balanced parentheses for the immediate expression)
+   * Checks if the current expression enclosed in parentheses is complete (has balanced parentheses
+   * for the immediate expression)
    */
-  private boolean isCurrentExpressionComplete() {
+  private boolean isCurrentExpressionComplete()
+  {
     // Count open and close parentheses
     int openCount = 0;
     int closeCount = 0;
-    
-    for (int i = 0; i < contents.length(); i++) {
-      if (contents.charAt(i) == '(') {
+
+    for (int i = 0; i < contents.length(); i++)
+    {
+      if (contents.charAt(i) == '(')
+      {
         openCount++;
-      } else if (contents.charAt(i) == ')') {
+      }
+      else if (contents.charAt(i) == ')')
+      {
         closeCount++;
         // If we've balanced the outermost parentheses
-        if (openCount == closeCount) {
+        if (openCount == closeCount)
+        {
           return true;
         }
       }
     }
-    
+
     return false;
   }
-  
+
   /**
    * Counts occurrences of a character in a string
    */
-  private int countChar(String str, char c) {
+  private int countChar(String str, char c)
+  {
     int count = 0;
-    for (int i = 0; i < str.length(); i++) {
-      if (str.charAt(i) == c) {
+    for (int i = 0; i < str.length(); i++)
+    {
+      if (str.charAt(i) == c)
+      {
         count++;
       }
     }
@@ -183,15 +221,21 @@ public class Display extends JPanel implements ActionListener
   /**
    * Checks if parentheses in a string are balanced
    */
-  private boolean areParenthesesBalanced(String str) {
+  private boolean areParenthesesBalanced(String str)
+  {
     int balance = 0;
-    for (int i = 0; i < str.length(); i++) {
-      if (str.charAt(i) == '(') {
+    for (int i = 0; i < str.length(); i++)
+    {
+      if (str.charAt(i) == '(')
+      {
         balance++;
-      } else if (str.charAt(i) == ')') {
+      }
+      else if (str.charAt(i) == ')')
+      {
         balance--;
       }
-      if (balance < 0) {
+      if (balance < 0)
+      {
         return false; // Closing without opening
       }
     }
@@ -199,38 +243,44 @@ public class Display extends JPanel implements ActionListener
   }
 
   /**
-   * Removes outermost matching parentheses from a string
-   * E.g., "(3+4i)" becomes "3+4i"
+   * Removes outermost matching parentheses from a string E.g., "(3+4i)" becomes "3+4i"
    */
-  private String stripOutermostParentheses(String str) {
+  private String stripOutermostParentheses(String str)
+  {
     // Find the outermost matching pair of parentheses
     int openingIndex = -1;
     int closingIndex = -1;
     int balance = 0;
-    
-    for (int i = 0; i < str.length(); i++) {
-      if (str.charAt(i) == '(') {
-        if (openingIndex == -1) {
+
+    for (int i = 0; i < str.length(); i++)
+    {
+      if (str.charAt(i) == '(')
+      {
+        if (openingIndex == -1)
+        {
           openingIndex = i;
         }
         balance++;
-      } else if (str.charAt(i) == ')') {
+      }
+      else if (str.charAt(i) == ')')
+      {
         balance--;
-        if (balance == 0 && openingIndex != -1) {
+        if (balance == 0 && openingIndex != -1)
+        {
           closingIndex = i;
           break;
         }
       }
     }
-    
-    if (openingIndex == -1 || closingIndex == -1) {
+
+    if (openingIndex == -1 || closingIndex == -1)
+    {
       return str; // No matching pair found
     }
-    
+
     // Return the content without the outermost parentheses
-    return str.substring(0, openingIndex) + 
-           str.substring(openingIndex + 1, closingIndex) +
-           str.substring(closingIndex + 1);
+    return str.substring(0, openingIndex) + str.substring(openingIndex + 1, closingIndex)
+        + str.substring(closingIndex + 1);
   }
 
   /**
@@ -242,9 +292,10 @@ public class Display extends JPanel implements ActionListener
     {
       return; // Nothing to toggle
     }
-    
+
     // Skip toggling for zero
-    if (contents.equals("0")) {
+    if (contents.equals("0"))
+    {
       return; // Don't toggle the sign of zero
     }
 
