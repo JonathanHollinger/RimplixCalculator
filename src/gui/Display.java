@@ -162,11 +162,10 @@ public class Display extends JPanel implements ActionListener
 					System.err.print("Parsing Failed");
 				}
 				Evaluator evaluator = new Evaluator(tokens);
-				expression = evaluator.toString();
+				expression += contents + " " + ac + " " + evaluator.result().toString();
 				evaluatedExpression = true;
 				contents = "";
-          problem = problem.substring(0, problem.length() - 1);
-
+				problem = evaluator.result().toString();
 			}
 		}
 		default ->

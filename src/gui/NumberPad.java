@@ -7,7 +7,7 @@ import javax.swing.*;
 /**
  * A numeric keypad
  */
-public class NumberPad extends    JPanel
+public class NumberPad extends JPanel
 {
 
   /**
@@ -18,6 +18,7 @@ public class NumberPad extends    JPanel
   private static final Font BUTTON_FONT = new Font("DejaVu Sans", Font.PLAIN, 12);
 
   ActionListener listener;
+
   /**
    * Default Constructor
    */
@@ -51,12 +52,6 @@ public class NumberPad extends    JPanel
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, 0), ".");
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT_PARENTHESIS, 0), "(");
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT_PARENTHESIS, 0), ")");
-
-
-
-
-
-<<<<<<< Upstream, based on origin/main
     setupLayout();
   }
 
@@ -110,8 +105,6 @@ public class NumberPad extends    JPanel
     setLayout(new GridBagLayout());
     GridBagConstraints c = new GridBagConstraints();
 
-
-
     addButton("±", 0, 0);
     addButton("C", 1, 0);
     addButton("←", 2, 0);
@@ -121,7 +114,7 @@ public class NumberPad extends    JPanel
     addButton("8", 1, 1);
     addButton("9", 2, 1);
     addButton("-", 3, 1);
-    addButton("Inv", 4, 1);
+    // addButton("Inv", 4, 1);
     addButton("4", 0, 2);
     addButton("5", 1, 2);
     addButton("6", 2, 2);
@@ -137,45 +130,5 @@ public class NumberPad extends    JPanel
     addButton("=", 3, 4);
     addButton(".", 4, 4);
 
-
   }
-=======
-    }
-    
-    private void setupLayout()
-    {
-        
-        setLayout(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
-        
-        
-        
-        addButton("±", 0, 0);
-        addButton("C", 1, 0);
-        addButton("←", 2, 0);
-        addButton("+", 3, 0);
-        addButton("R", 4, 0);
-        addButton("7", 0, 1);
-        addButton("8", 1, 1);
-        addButton("9", 2, 1);
-        addButton("-", 3, 1);
-        // addButton("Inv", 4, 1);
-        addButton("4", 0, 2);
-        addButton("5", 1, 2);
-        addButton("6", 2, 2);
-        addButton("x", 3, 2);
-        addButton("(", 4, 2);
-        addButton("1", 0, 3);
-        addButton("2", 1, 3);
-        addButton("3", 2, 3);
-        addButton("÷", 3, 3);
-        addButton(")", 4, 3);
-        addWideButton("0", 0, 4);
-        addButton("i", 2, 4);
-        addButton("=", 3, 4);
-        addButton(".", 4, 4);
-        
-        
-    }
->>>>>>> 7b82f59 Display update
 }
