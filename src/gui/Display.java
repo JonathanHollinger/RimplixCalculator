@@ -127,7 +127,7 @@ public class Display extends JPanel implements ActionListener
           {
             BufferedReader toParse = new BufferedReader(new StringReader(problem));
             Evaluator eval = new Evaluator(Parser.parse(toParse));
-            expression += " " + contents + EQUALS + " " +  eval.result();
+            expression += " " + contents + EQUALS + " " + problem + EQUALS + eval.result();
             problem = eval.result().toString();
             evaluatedExpression = true;
             contents = "";
@@ -145,7 +145,7 @@ public class Display extends JPanel implements ActionListener
           if(evaluatedExpression) {
             evaluatedExpression = false;
             expression = "";
-            problem = "";
+            problem += "";
           }
           problem += ac;
           contents += ac;
