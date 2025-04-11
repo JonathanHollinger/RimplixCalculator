@@ -245,6 +245,11 @@ public class Display extends JPanel implements ActionListener
     {
       return; // Nothing to toggle
     }
+    
+    // Skip toggling for zero
+    if (contents.equals("0")) {
+      return; // Don't toggle the sign of zero
+    }
 
     // Handle different formats of complex numbers
     if (contents.contains(I))
