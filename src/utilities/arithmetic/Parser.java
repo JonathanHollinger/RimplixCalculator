@@ -51,22 +51,34 @@ public abstract class Parser
 				tokens.add(new Token(Expression.DIVIDE, null));
 				break;
 			default:
-				if (Character.isDigit(token))
+				if (Character.isDigit(token) || token == '.' || token == '-'
+						|| token == '+')
 				{
 					StringBuilder number = new StringBuilder();
 					number.append(token);
-					while ((ch = in.read()) != -1 && Character.isDigit((char) ch))
+					boolean seenDecimal = (token == '.');
+					while ((ch = in.read()) != -1)
 					{
-						number.append((char) ch);
-					}
-					tokens.add(new Token(Expression.NUMBER, number.toString()));
+						char next = (char) ch;
 
-					// Buffer the non-digit character for the next loop
-					if (ch != -1)
-					{
-						hasBuffered = true;
-						bufferedChar = (char) ch;
+						if (Character.isDigit(next) || (!seenDecimal && next == '.'))
+						{
+							number.append(next);
+							if (next == '.')
+								seenDecimal = true;
+						} else if (next == 'i')
+						{
+							number.append('i');
+							break;
+						} else
+						{
+							hasBuffered = true;
+							bufferedChar = next;
+							break;
+						}
 					}
+
+					tokens.add(new Token(Expression.NUMBER, number.toString()));
 				}
 				break;
 			}
