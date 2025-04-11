@@ -72,7 +72,7 @@ public class ComplexNums implements Nums
 		} else
 		{
 			ComplexNums n = (ComplexNums) other;
-			return this.add(new ComplexNums(n.getMult(), n.getVal() * -1));
+			return this.add(new ComplexNums(n.getMult() * -1, n.getVal() * -1));
 		}
 	}
 
@@ -92,11 +92,19 @@ public class ComplexNums implements Nums
 		} else // Needs to make a new simple number
 		{
 			ComplexNums n = (ComplexNums) other;
-			double newMult = (this.getMult() * n.getVal()) + this.getVal() * n.getMult();
-			double newVal = (this.getVal() * other.getVal())
-					+ (this.getMult() * n.getMult() * -1);
-			return new ComplexNums(newMult, newVal);
+
+			double a = this.getVal();
+			double b = this.getMult();
+
+			double c = n.getVal();
+			double d = n.getMult();
+
+			double real = a * c - b * d;
+			double imag = a * d + b * c;
+
+			return new ComplexNums(imag, real);
 		}
+
 	}
 
 	public Nums div(final Nums other)
