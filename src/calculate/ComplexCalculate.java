@@ -72,7 +72,13 @@ public  class ComplexCalculate {
 			String operator = isFormated(equation);
 			String[] chunkedEq = equation.split("");
 			if (operator != "" && isFormated(chunkedEq[chunkedEq.length - 1]) == "") {
+				if(operator == "+") {
+					operator = "\\+";
+				}
 				chunkedEq = equation.split(operator);
+				if (operator == "\\+") {
+					operator = "+";
+				}
 				equation = equationChunk(chunkedEq, operator);	
 				return calculateString(tokenArray, index + 1, equation);
 			}
