@@ -21,6 +21,7 @@ public class Display extends JPanel implements ActionListener
 
   // Constants for buttons
   private static final String CLEAR = "C";
+  private static final String RESET = "R";
   private static final String I = "i";
   private static final String ERASE_TO_THE_LEFT = "←";
   private static final String SIGN_TOGGLE = "±";
@@ -62,6 +63,10 @@ public class Display extends JPanel implements ActionListener
       case CLEAR -> {
         problem = "";
         contents = "";
+        expression = "";
+        parentheses = "";
+      }
+      case RESET -> {
         expression = "";
         parentheses = "";
       }
@@ -127,7 +132,7 @@ public class Display extends JPanel implements ActionListener
           {
             BufferedReader toParse = new BufferedReader(new StringReader(problem));
             Evaluator eval = new Evaluator(Parser.parse(toParse));
-            expression += " " + contents + EQUALS + " " + problem + EQUALS + eval.result();
+            expression +=  eval.result();
             problem = eval.result().toString();
             evaluatedExpression = true;
             contents = "";

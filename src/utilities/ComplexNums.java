@@ -67,6 +67,7 @@ public class ComplexNums implements Nums
 		}
 
 		if (other instanceof SimpleNums)
+
 		{
 			return this.add(new SimpleNums(other.getVal() * -1));
 		} else
@@ -99,12 +100,11 @@ public class ComplexNums implements Nums
 			double c = n.getVal();
 			double d = n.getMult();
 
-			double real = a * c - b * d;
-			double imag = a * d + b * c;
+			double r = a * c - b * d;
+			double i = a * d + b * c;
 
-			return new ComplexNums(imag, real);
+			return new ComplexNums(i, r);
 		}
-
 	}
 
 	public Nums div(final Nums other)
@@ -129,10 +129,10 @@ public class ComplexNums implements Nums
 
 			double denominator = c * c + d * d;
 
-			double newVal = (a * c + b * d) / denominator;
-			double newMult = (b * c - a * d) / denominator;
+			double r = (a * c + b * d) / denominator;
+			double i = (b * c - a * d) / denominator;
 
-			return new ComplexNums(newMult, newVal);
+			return new ComplexNums(i, r);
 		}
 	}
 
