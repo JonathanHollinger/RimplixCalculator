@@ -21,6 +21,7 @@ public class Display extends JPanel implements ActionListener
 
   // Constants for buttons
   private static final String CLEAR = "C";
+  private static final String RESET = "R";
   private static final String I = "i";
   private static final String ERASE_TO_THE_LEFT = "←";
   private static final String SIGN_TOGGLE = "±";
@@ -62,6 +63,10 @@ public class Display extends JPanel implements ActionListener
       case CLEAR -> {
         problem = "";
         contents = "";
+        expression = "";
+        parentheses = "";
+      }
+      case RESET -> {
         expression = "";
         parentheses = "";
       }
