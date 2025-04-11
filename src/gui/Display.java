@@ -40,9 +40,6 @@ public class Display extends JPanel implements ActionListener
     expressionLabel.setFont(new Font("Arial", Font.PLAIN, 14));
     expressionLabel.setForeground(Color.DARK_GRAY);
     
-    ImageIcon img = new ImageIcon("/s25team3d/src/media/logoRimplex.png");
-    expressionLabel.setIcon(img);
-    
     
 
     // label for current bottom right
