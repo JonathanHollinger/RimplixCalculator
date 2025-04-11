@@ -165,6 +165,7 @@ public class Display extends JPanel implements ActionListener
 				expression = evaluator.toString();
 				evaluatedExpression = true;
 				contents = "";
+          problem = problem.substring(0, problem.length() - 1);
 
 			}
 		}
