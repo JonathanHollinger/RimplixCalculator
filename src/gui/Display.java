@@ -3,6 +3,10 @@ package gui;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+
+import calculate.ComplexCalculate;
+import calculate.EquationChunker;
+
 import java.io.*;
 
 import utilities.Check;
@@ -128,20 +132,14 @@ public class Display extends JPanel implements ActionListener
         // Only evaluate if all parentheses are balanced
         if (areParenthesesBalanced(parentheses))
         {
-          try
-          {
-            BufferedReader toParse = new BufferedReader(new StringReader(problem));
-            Evaluator eval = new Evaluator(Parser.parse(toParse));
-            expression +=  eval.result();
-            problem = eval.result().toString();
-            evaluatedExpression = true;
-            contents = "";
-          }
-          catch (IOException e)
-          {
-            e.printStackTrace(); // or handle it more gracefully
-            expression += "Error: Unable to evaluate expression.";
-          }
+          String[] chunked = EquationChunker.chunkEquation(problem);
+          String str = ComplexCalculate.calculateString(chunked);
+          expression =  str;
+          problem = str;
+          evaluatedExpression = true;
+          contents = "";
+
+
         }
       }
       default -> {

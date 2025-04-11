@@ -13,8 +13,8 @@ public class PINPadWindow extends JFrame
 {
 
   /**
-  * 
-  */
+   * 
+   */
   private static final long serialVersionUID = 1L;
   private static final String EXIT_ITEM = "Exit";
   private static final String FILE_MENU = "File";
@@ -22,7 +22,7 @@ public class PINPadWindow extends JFrame
   private static final String VIEW_MENU = "View"; 
   private static final String ABOUT_MENU = "About"; 
   private static final String CPLANE_MENU = "Complex Plane"; 
-  
+
 
   /**
    * Default Constructor.
@@ -70,11 +70,11 @@ public class PINPadWindow extends JFrame
 
     NumberPad numberPad = new NumberPad(display);
     contentPane.add(numberPad, BorderLayout.CENTER);
-    
+
     ImageIcon img = new ImageIcon("src/media/iconRimplex.png");
     setIconImage(img.getImage());
   }
-  
+
   private void runHelp() {
     File file = new File("src/media/help.html");
     try

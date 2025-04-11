@@ -23,7 +23,7 @@ public class ComplexNums implements Nums
    * 
    * @param val val
    */
-  public ComplexNums(final double iMult, final double val)
+  public ComplexNums(final double val, final double iMult)
   {
     this.iMult = iMult;
     this.val = val;
@@ -33,13 +33,19 @@ public class ComplexNums implements Nums
    * int constructor.
    * 
    * @param val val
+   * @param iMult i modifier
    */
-  public ComplexNums(final int iMult, final int val)
+  public ComplexNums(final int val, final int iMult )
   {
     this.iMult = (double) iMult;
     this.val = (double) val;
   }
 
+  /**
+   * Addition function.
+   * @param other
+   * @return final number.
+   */
   public Nums add(final Nums other)
   {
     if (other == null)
@@ -55,7 +61,7 @@ public class ComplexNums implements Nums
       ComplexNums n = (ComplexNums) other;
       double newMult = this.getMult() + n.getMult();
       double newVal = this.getVal() + other.getVal();
-      return new ComplexNums(newMult, newVal);
+      return new ComplexNums(newVal, newMult);
     }
   }
 
@@ -72,7 +78,7 @@ public class ComplexNums implements Nums
     } else
     {
       ComplexNums n = (ComplexNums) other;
-      return this.add(new ComplexNums(n.getMult(), n.getVal() * -1));
+      return this.add(new ComplexNums(n.getVal() * -1, n.getMult()));
     }
   }
 
@@ -95,7 +101,7 @@ public class ComplexNums implements Nums
       double newMult = (this.getMult() * n.getVal()) + this.getVal() * n.getMult();
       double newVal = (this.getVal() * other.getVal())
           + (this.getMult() * n.getMult() * -1);
-      return new ComplexNums(newMult, newVal);
+      return new ComplexNums(newVal, newMult);
     }
   }
 
@@ -124,7 +130,7 @@ public class ComplexNums implements Nums
       double newVal = (a * c + b * d) / denominator;
       double newMult = (b * c - a * d) / denominator;
 
-      return new ComplexNums(newMult, newVal);
+      return new ComplexNums(newVal, newMult);
     }
   }
 
