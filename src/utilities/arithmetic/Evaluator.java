@@ -2,103 +2,181 @@ package utilities.arithmetic;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 import utilities.ComplexNums;
 
 public class Evaluator
 {
-  /*
-   * List of Tokens which will be Evaluated.
-   * 
-   * Token list can be retrieved from the Parse function in the Parser class.
-   * Tokens represent values such as number, left parenthesis, right parenthesis,
-   * add, etc.
-   */
-  private List<Token> tokens;
+	private List<Token> tokens;
+	private ComplexNums evaluated;
 
-  // Evaluated answer of the evaluate process.
-  private ComplexNums evaluated;
+	public Evaluator(List<Token> tokens)
+	{
+		this.tokens = tokens;
+		this.evaluated = evaluate();
+	}
 
-  public Evaluator(List<Token> tokens)
-  {
-    this.tokens = tokens;
-    evaluated = evaluate();
-  }
+	public ComplexNums result()
+	{
+		return evaluated;
+	}
 
-  public ComplexNums result()
-  {
-    return evaluated;
-  }
+	private ComplexNums evaluate()
+	{
+		List<Token> rpn = toRPN(tokens); // Convert infix to postfix
+		return evaluateRPN(rpn); // Evaluate postfix expression
+	}
 
-  public ComplexNums evaluate()
-  {
-    ComplexNums result = new ComplexNums();
+	private List<Token> toRPN(List<Token> tokens)
+	{
+		List<Token> output = new ArrayList<>();
+		Stack<Token> operators = new Stack<>();
 
-    ComplexNums currentValue = new ComplexNums();
-    Parser.Expression currentOperation = null;
+		for (Token token : tokens)
+		{
+			switch (token.type)
+			{
+			case NUMBER:
+				output.add(token);
+				break;
 
-    for (int i = 0; i < tokens.size(); i++)
-    {
-      Token tok = tokens.get(i);
+			case ADD:
+			case SUBTRACT:
+			case MULTIPLY:
+			case DIVIDE:
+				while (!operators.isEmpty()
+						&& isHigherPrecedence(operators.peek(), token))
+				{
+					output.add(operators.pop());
+				}
+				operators.push(token);
+				break;
 
-      switch (tok.type)
-      {
-        case Parser.Expression.LEFT_PAREN:
-          // Handle sub-expression inside parentheses
-          // For simplicity, recursively call evaluate on the tokens inside
-          // parentheses
-          // (You would need to handle nested parentheses properly)
-          i++; // Skip the opening parenthesis
-          List<Token> subExpression = new ArrayList<>();
-          while (tokens.get(i).type != Parser.Expression.RIGHT_PAREN)
-          {
-            subExpression.add(tokens.get(i));
-            i++;
-          }
-          // Now evaluate the sub-expression
-          Evaluator subEvaluator = new Evaluator(subExpression);
-          currentValue = subEvaluator.result();
-          break;
+			case LEFT_PAREN:
+				operators.push(token);
+				break;
 
-        case Parser.Expression.NUMBER:
-          // Handle number token
-          currentValue = new ComplexNums(Double.parseDouble(tok.value), 0.0);
-          break;
+			case RIGHT_PAREN:
+				while (!operators.isEmpty()
+						&& operators.peek().type != Parser.Expression.LEFT_PAREN)
+				{
+					output.add(operators.pop());
+				}
+				if (!operators.isEmpty()
+						&& operators.peek().type == Parser.Expression.LEFT_PAREN)
+				{
+					operators.pop(); // Discard left parenthesis
+				}
+				break;
 
-        case Parser.Expression.ADD:
-        case Parser.Expression.SUBTRACT:
-        case Parser.Expression.MULTIPLY:
-        case Parser.Expression.DIVIDE:
-          // If there is a pending operation, evaluate it with the current value
-          if (currentOperation != null)
-          {
-            result = calculate(result, currentValue, currentOperation);
-          }
-          // Set the new operation
-          currentOperation = tok.type;
-          break;
+			default:
+				throw new IllegalArgumentException("Unknown token type: " + token.type);
+			}
+		}
 
-        case Parser.Expression.RIGHT_PAREN:
-          // Handle closing parenthesis (you already processed it inside the
-          // parenthesis)
-          break;
+		while (!operators.isEmpty())
+		{
+			output.add(operators.pop());
+		}
 
-        default:
-          // Unhandled case (e.g., unknown token type)
-          break;
-      }
-    }
-    return result;
-  }
+		return output;
+	}
 
-  public ComplexNums calculate(ComplexNums result, ComplexNums cur,
-      Parser.Expression op)
-  {
-    return new ComplexNums(); // [TEMPORARY] Remove this when method is complete.
-  }
+	private ComplexNums evaluateRPN(List<Token> rpn)
+	{
+		Stack<ComplexNums> stack = new Stack<>();
 
-  public String toString()
-  {
-    return "Result of Evaluation: " + evaluated.toString();
-  }
+		for (Token token : rpn)
+		{
+			switch (token.type)
+			{
+			case NUMBER:
+				String val = token.value;
+
+				if (val.endsWith("i"))
+				{
+					// Remove the trailing 'i' and parse as a double
+					String numericPart = val.substring(0, val.length() - 1);
+
+					double imag = 1.0;
+					if (!numericPart.isEmpty() && !numericPart.equals("+")
+							&& !numericPart.equals("-"))
+					{
+						imag = Double.parseDouble(numericPart);
+					} else if (numericPart.equals("-"))
+					{
+						imag = -1.0;
+					}
+
+					stack.push(new ComplexNums(0, imag)); // (real, imaginary)
+				} else
+				{
+					// Standard real number
+					stack.push(new ComplexNums(Double.parseDouble(val), 0)); // (real,
+																				// imaginary)
+				}
+				break;
+
+			case ADD:
+			case SUBTRACT:
+			case MULTIPLY:
+			case DIVIDE:
+				ComplexNums b = stack.pop();
+				ComplexNums a = stack.pop();
+				switch (token.type)
+				{
+				case ADD:
+					stack.push((ComplexNums) a.add(b));
+					break;
+				case SUBTRACT:
+					stack.push((ComplexNums) a.sub(b));
+					break;
+				case MULTIPLY:
+					stack.push((ComplexNums) a.mult(b));
+					break;
+				case DIVIDE:
+					stack.push((ComplexNums) a.div(b));
+					break;
+				default:
+					throw new IllegalArgumentException(
+							"Unknown token in RPN: " + token.type);
+				}
+				break;
+
+			default:
+				throw new IllegalArgumentException("Unknown token in RPN: " + token.type);
+			}
+		}
+
+		return stack.pop();
+	}
+
+	private boolean isHigherPrecedence(Token op1, Token op2)
+	{
+		int p1 = getPrecedence(op1.type);
+		int p2 = getPrecedence(op2.type);
+		return p1 >= p2;
+	}
+
+	private int getPrecedence(Parser.Expression type)
+	{
+		switch (type)
+		{
+		case MULTIPLY:
+		case DIVIDE:
+			return 2;
+		case ADD:
+		case SUBTRACT:
+			return 1;
+		default:
+			return 0;
+		}
+	}
+
+	@Override
+	public String toString()
+	{
+		return evaluated.toString();
+	}
 }

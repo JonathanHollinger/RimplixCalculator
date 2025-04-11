@@ -102,7 +102,7 @@ public class TestEvaluator
 	@Test
 	public void testComplexEquation()
 	{
-		String expr = "(1 * 2i) * (6 - 3i)"; // Should evaluate to -5 + 10i
+		String expr = "(1 * 2i) * (6 - 3i)"; // Should evaluate to 6 + 12i
 		BufferedReader reader = new BufferedReader(new StringReader(expr));
 
 		try

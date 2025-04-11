@@ -5,159 +5,167 @@ package utilities;
  */
 public class ComplexNums implements Nums
 {
-  private double iMult;
-  private double val;
+	private double iMult;
+	private double val;
 
-  /**
-   * 
-   */
-  public ComplexNums()
-  {
-    this.iMult = 0;
-    this.val = 0;
+	/**
+	 * 
+	 */
+	public ComplexNums()
+	{
+		this.iMult = 0;
+		this.val = 0;
 
-  }
+	}
 
-  /**
-   * double constructor.
-   * 
-   * @param val val
-   * @param iMult i modifier
-   */
-  public ComplexNums(final double val, final double iMult)
-  {
-    this.iMult = iMult;
-    this.val = val;
-  }
+	/**
+	 * double constructor.
+	 * 
+	 * @param val   val
+	 * @param iMult i modifier
+	 */
+	public ComplexNums(final double val, final double iMult)
+	{
+		this.iMult = iMult;
+		this.val = val;
+	}
 
-  /**
-   * int constructor.
-   * 
-   * @param val val
-   * @param iMult i modifier
-   */
-  public ComplexNums(final int val, final int iMult )
-  {
-    this.iMult = (double) iMult;
-    this.val = (double) val;
-  }
+	/**
+	 * int constructor.
+	 * 
+	 * @param val   val
+	 * @param iMult i modifier
+	 */
+	public ComplexNums(final int val, final int iMult)
+	{
+		this.iMult = (double) iMult;
+		this.val = (double) val;
+	}
 
-  /**
-   * Addition function.
-   * @param other
-   * @return final number.
-   */
-  public Nums add(final Nums other)
-  {
-    if (other == null)
-    {
-      return null;
-    }
+	/**
+	 * Addition function.
+	 * 
+	 * @param other
+	 * @return final number.
+	 */
+	public Nums add(final Nums other)
+	{
+		if (other == null)
+		{
+			return null;
+		}
 
-    if (other instanceof SimpleNums)
-    {
-      return new ComplexNums(this.getIConst(), this.getVal() + other.getVal());
-    } else
-    {
-      ComplexNums n = (ComplexNums) other;
-      double newMult = this.getIConst() + n.getIConst();
-      double newVal = this.getVal() + other.getVal();
-      return new ComplexNums(newVal, newMult);
-    }
-  }
+		if (other instanceof SimpleNums)
+		{
+			return new ComplexNums(this.getIConst(), this.getVal() + other.getVal());
+		} else
+		{
+			ComplexNums n = (ComplexNums) other;
+			double newMult = this.getIConst() + n.getIConst();
+			double newVal = this.getVal() + other.getVal();
+			return new ComplexNums(newVal, newMult);
+		}
+	}
 
-  public Nums sub(final Nums other)
-  {
-    if (other == null)
-    {
-      return null;
-    }
+	public Nums sub(final Nums other)
+	{
+		if (other == null)
+		{
+			return null;
+		}
 
-    if (other instanceof SimpleNums)
-    {
-      return this.add(new SimpleNums(other.getVal() * -1));
-    } else
-    {
-      ComplexNums n = (ComplexNums) other;
-      return this.add(new ComplexNums(n.getVal() * -1, n.getIConst()));
-    }
-  }
+		if (other instanceof SimpleNums)
+		{
+			return this.add(new SimpleNums(other.getVal() * -1));
+		} else
+		{
+			ComplexNums n = (ComplexNums) other;
+			return this.add(new ComplexNums(n.getVal() * -1, n.getIConst()));
+		}
+	}
 
-  public Nums mult(final Nums other)
-  {
-    if (other == null)
-    {
-      return null;
-    }
+	public Nums mult(final Nums other)
+	{
+		if (other == null)
+		{
+			return null;
+		}
 
-    // Just needs to multiply the new value
-    if (other instanceof SimpleNums)
-    {
-      return new ComplexNums(this.getIConst() * other.getVal(),
-          this.getVal() * other.getVal());
-    } else // Needs to make a new simple number
-    {
-      ComplexNums n = (ComplexNums) other;
-      double newMult = (this.getIConst() * n.getVal()) + this.getVal() * n.getIConst();
-      double newVal = (this.getVal() * other.getVal())
-          + (this.getIConst() * n.getIConst() * -1);
-      return new ComplexNums(newVal, newMult);
-    }
-  }
+		// Just needs to multiply the new value
+		if (other instanceof SimpleNums)
+		{
+			return new ComplexNums(this.getIConst() * other.getVal(),
+					this.getVal() * other.getVal());
+		} else // Needs to make a new simple number
+		{
+			ComplexNums n = (ComplexNums) other;
 
-  public Nums div(final Nums other)
-  {
-    if (other == null)
-    {
-      return null;
-    }
+			double a = this.getVal();
+			double b = this.getIConst();
 
-    if (other instanceof SimpleNums)
-    {
-      double divisor = other.getVal();
-      return new ComplexNums(this.getIConst() / divisor, this.getVal() / divisor);
-    } else
-    {
-      ComplexNums n = (ComplexNums) other;
+			double c = n.getVal();
+			double d = n.getIConst();
 
-      double a = this.getVal();
-      double b = this.getIConst();
-      double c = n.getVal();
-      double d = n.getIConst();
+			double r = a * c - b * d;
+			double i = a * d + b * c;
 
-      double denominator = c * c + d * d;
+			return new ComplexNums(r, i);
+		}
+	}
 
-      double newVal = (a * c + b * d) / denominator;
-      double newMult = (b * c - a * d) / denominator;
+	public Nums div(final Nums other)
+	{
+		if (other == null)
+		{
+			return null;
+		}
 
-      return new ComplexNums(newVal, newMult);
-    }
-  }
+		if (other instanceof SimpleNums)
+		{
+			double divisor = other.getVal();
+			return new ComplexNums(this.getIConst() / divisor, this.getVal() / divisor);
+		} else
+		{
+			ComplexNums n = (ComplexNums) other;
 
-  /**
-   * basic getter.
-   * 
-   * @return mult
-   */
-  public double getIConst()
-  {
-    return this.iMult;
-  }
+			double a = this.getVal();
+			double b = this.getIConst();
+			double c = n.getVal();
+			double d = n.getIConst();
 
-  @Override
-  public double getVal()
-  {
-    return this.val;
-  }
+			double denominator = c * c + d * d;
 
-  @Override
-  public String toString()
-  {
-    if (getVal() % 1 == 0)
-    {
-      return (int) getIConst() + "i";
-    }
-    return getVal() + getIConst() + "i";
-  }
+			double newVal = (a * c + b * d) / denominator;
+			double newMult = (b * c - a * d) / denominator;
+
+			return new ComplexNums(newVal, newMult);
+		}
+	}
+
+	/**
+	 * basic getter.
+	 * 
+	 * @return mult
+	 */
+	public double getIConst()
+	{
+		return this.iMult;
+	}
+
+	@Override
+	public double getVal()
+	{
+		return this.val;
+	}
+
+	@Override
+	public String toString()
+	{
+		if (getVal() % 1 == 0)
+		{
+			return (int) getIConst() + "i";
+		}
+		return getVal() + getIConst() + "i";
+	}
 
 }
