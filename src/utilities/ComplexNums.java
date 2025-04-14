@@ -159,17 +159,36 @@ public class ComplexNums implements Nums
 	}
 
 	@Override
-  public String toString()
-  {
-    if(getIConst() == 0) {
-    }
-    if (getVal() > 0)
-    {
-      return (int) getIConst() + "i" + "+" + (int) getVal();
-    } else if (getVal() < 0) {
-      return (int) getIConst() + "i" + "-" + getVal();
-    }
-    return getVal() + "i";
-  }
+	public String toString()
+	{
+		Double i = getIConst(); // Imaginary Number.
+		Double r = getVal(); // Real number.
+
+		// Check if there is an imaginary number.
+		if (i > 0)
+		{
+			if (r == 0) // If there is no real number.
+			{
+				return i.toString() + "i";
+			}
+
+			// r + i
+			return r.toString() + "+" + i.toString() + "i";
+		} else if (i < 0)
+		{
+			if (r == 0) // If there is no real number.
+			{
+				return i.toString() + "i";
+			}
+
+			// Switches polarity of i to match subtraction format.
+			i *= -1;
+
+			// r - i
+			return r.toString() + "-" + i.toString() + "i";
+		}
+
+		return r.toString(); // If i is 0, return real number.
+	}
 
 }
