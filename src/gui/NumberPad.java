@@ -7,7 +7,7 @@ import javax.swing.*;
 /**
  * A numeric keypad
  */
-public class NumberPad extends    JPanel
+public class NumberPad extends JPanel
 {
 
   /**
@@ -18,6 +18,7 @@ public class NumberPad extends    JPanel
   private static final Font BUTTON_FONT = new Font("DejaVu Sans", Font.PLAIN, 12);
 
   ActionListener listener;
+
   /**
    * Default Constructor
    */
@@ -51,11 +52,6 @@ public class NumberPad extends    JPanel
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, 0), ".");
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT_PARENTHESIS, 0), "(");
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT_PARENTHESIS, 0), ")");
-
-
-
-
-
     setupLayout();
   }
 
@@ -109,8 +105,6 @@ public class NumberPad extends    JPanel
     setLayout(new GridBagLayout());
     GridBagConstraints c = new GridBagConstraints();
 
-
-
     addButton("±", 0, 0);
     addButton("C", 1, 0);
     addButton("←", 2, 0);
@@ -135,7 +129,6 @@ public class NumberPad extends    JPanel
     addButton("i", 2, 4);
     addButton("=", 3, 4);
     addButton(".", 4, 4);
-
 
   }
 }

@@ -18,7 +18,7 @@ public class TestEvaluator
 	@Test
 	public void testSimpleAdditionAndMultiplication()
 	{
-		String expr = "4 + 2 * 3"; // Should evaluate to 10
+		String expr = "4 + 2 x 3"; // Should evaluate to 10
 		BufferedReader reader = new BufferedReader(new StringReader(expr));
 
 		try
@@ -39,7 +39,7 @@ public class TestEvaluator
 	@Test
 	public void testParentheses()
 	{
-		String expr = "(4 + 2) * 3"; // Should evaluate to 18
+		String expr = "(4 + 2) x 3"; // Should evaluate to 18
 		BufferedReader reader = new BufferedReader(new StringReader(expr));
 
 		try
@@ -81,7 +81,7 @@ public class TestEvaluator
 	@Test
 	public void testComplexMultiplication()
 	{
-		String expr = "(1 + 2i) * (3 + 4i)"; // Should evaluate to -5 + 10i
+		String expr = "(1 + 2i) x (3 + 4i)"; // Should evaluate to -5 + 10i
 		BufferedReader reader = new BufferedReader(new StringReader(expr));
 
 		try
@@ -102,7 +102,7 @@ public class TestEvaluator
 	@Test
 	public void testComplexEquation()
 	{
-		String expr = "(1 * 2i) * (6 - 3i)"; // Should evaluate to 6 + 12i
+		String expr = "(1 x 2i) x (6 - 3i)"; // Should evaluate to 6 + 12i
 		BufferedReader reader = new BufferedReader(new StringReader(expr));
 
 		try

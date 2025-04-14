@@ -80,7 +80,7 @@ public class ComplexNums implements Nums
 		} else
 		{
 			ComplexNums n = (ComplexNums) other;
-			return this.add(new ComplexNums(n.getVal() * -1, n.getIConst()));
+			return this.add(new ComplexNums(n.getVal() * -1, n.getIConst() * -1));
 		}
 	}
 
@@ -159,13 +159,17 @@ public class ComplexNums implements Nums
 	}
 
 	@Override
-	public String toString()
-	{
-		if (getVal() % 1 == 0)
-		{
-			return (int) getIConst() + "i";
-		}
-		return getVal() + getIConst() + "i";
-	}
+  public String toString()
+  {
+    if(getIConst() == 0) {
+    }
+    if (getVal() > 0)
+    {
+      return (int) getIConst() + "i" + "+" + (int) getVal();
+    } else if (getVal() < 0) {
+      return (int) getIConst() + "i" + "-" + getVal();
+    }
+    return getVal() + "i";
+  }
 
 }
