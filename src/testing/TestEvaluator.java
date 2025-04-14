@@ -100,6 +100,48 @@ public class TestEvaluator
 	}
 
 	@Test
+	public void testComplexAddition()
+	{
+		String expr = "(11 + 3i) - (6 - 2i)"; // Should evaluate to -5 + 10i
+		BufferedReader reader = new BufferedReader(new StringReader(expr));
+
+		try
+		{
+			List<Token> tokens = Parser.parse(reader);
+			Evaluator evaluator = new Evaluator(tokens);
+			ComplexNums result = evaluator.result();
+
+			assertEquals(5.0, result.getIConst(), 0.0001); // Imaginary part
+			assertEquals(5.0, result.getVal(), 0.0001); // Real part
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			assert false : "Exception occurred during complex number evaluation";
+		}
+	}
+
+	@Test
+	public void testIOnly()
+	{
+		String expr = "5i - 2i"; // Should evaluate to -5 + 10i
+		BufferedReader reader = new BufferedReader(new StringReader(expr));
+
+		try
+		{
+			List<Token> tokens = Parser.parse(reader);
+			Evaluator evaluator = new Evaluator(tokens);
+			ComplexNums result = evaluator.result();
+
+			assertEquals(3.0, result.getIConst(), 0.0001); // Imaginary part
+			assertEquals(0.0, result.getVal(), 0.0001); // Real part
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			assert false : "Exception occurred during complex number evaluation";
+		}
+	}
+
+	@Test
 	public void testComplexEquation()
 	{
 		String expr = "(1 x 2i) x (6 - 3i)"; // Should evaluate to 6 + 12i
