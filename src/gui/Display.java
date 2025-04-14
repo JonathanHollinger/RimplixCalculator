@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
@@ -60,8 +61,12 @@ public class Display extends JPanel implements ActionListener
 		inputLabel = new JLabel("Enter a complex number", SwingConstants.RIGHT);
 		inputLabel.setFont(new Font("Arial", Font.BOLD, 20));
 		inputLabel.setForeground(Color.GRAY);
+		
+    ImageIcon img = new ImageIcon("src/media/logoRimplex.png");
+		JLabel imageLabel = new JLabel(img, SwingConstants.LEFT);
 
-		add(expressionLabel, BorderLayout.NORTH);
+		add(imageLabel, BorderLayout.NORTH);
+		add(expressionLabel, BorderLayout.CENTER);
 		add(inputLabel, BorderLayout.SOUTH);
 
 	}
