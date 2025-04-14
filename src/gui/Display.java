@@ -170,7 +170,7 @@ public class Display extends JPanel implements ActionListener
 				expression += contents + " " + ac + " " + evaluator.result().toString();
 				evaluatedExpression = true;
 				contents = "";
-				problem = evaluator.result().toString();
+				problem = "(" + evaluator.result().toString() + ")";
 			}
 		}
 		default ->
@@ -188,7 +188,7 @@ public class Display extends JPanel implements ActionListener
 			} else if ((ac.equals("+") || ac.equals("-") || ac.equals("x")
 					|| ac.equals("÷")) && evaluatedExpression)
 			{
-				expression = problem + " " + ac;
+				expression = problem.substring(1, problem.length()-1) + " " + ac;
 				problem += ac;
 				contents = "";
 				evaluatedExpression = false;
