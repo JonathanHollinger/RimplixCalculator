@@ -47,7 +47,7 @@ public abstract class Parser
 			case 'x':
 				tokens.add(new Token(Expression.MULTIPLY, null));
 				break;
-			case '/':
+			case '÷':
 				tokens.add(new Token(Expression.DIVIDE, null));
 				break;
 			default:
