@@ -44,14 +44,14 @@ public class NumberPad extends JPanel
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), "←");
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_C, 0), "C");
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_DIVIDE, 0), "÷");
-    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_PLUS, InputEvent.SHIFT_DOWN_MASK), "+");
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_PLUS, InputEvent.SHIFT_MASK), "+");
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, 0), "-");
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_X, 0), "x");
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_R, 0), "R");
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_EQUALS, 0), "=");
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, 0), ".");
-    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT_PARENTHESIS, InputEvent.SHIFT_DOWN_MASK), "(");
-    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT_PARENTHESIS, InputEvent.SHIFT_DOWN_MASK), ")");
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT_PARENTHESIS, InputEvent.SHIFT_MASK), "(");
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT_PARENTHESIS, InputEvent.SHIFT_MASK), ")");
     setupLayout();
   }
 
