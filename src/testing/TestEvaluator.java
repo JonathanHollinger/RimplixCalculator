@@ -60,7 +60,7 @@ public class TestEvaluator
 	@Test
 	public void testNegativeAndDivision()
 	{
-		String expr = "(8 - 2) / 3"; // Should evaluate to 2
+		String expr = "(8 - 2) ÷ 3"; // Should evaluate to 2
 		BufferedReader reader = new BufferedReader(new StringReader(expr));
 
 		try
