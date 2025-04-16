@@ -28,6 +28,7 @@ public class NumberPad extends JPanel
 
     this.listener = listener;
 
+    // 0 means it needs no modifier, the shift down means it works when shift is held down.
     InputMap inputMap  = this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_0, 0), "0");
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_1, 0), "1");
@@ -40,18 +41,17 @@ public class NumberPad extends JPanel
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_8, 0), "8");
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_9, 0), "9");
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_I, 0), "i");
-
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), "←");
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_C, 0), "C");
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_DIVIDE, 0), "÷");
-    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_PLUS, 0), "+");
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_PLUS, InputEvent.SHIFT_DOWN_MASK), "+");
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, 0), "-");
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_X, 0), "x");
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_R, 0), "R");
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_EQUALS, 0), "=");
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, 0), ".");
-    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT_PARENTHESIS, 0), "(");
-    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT_PARENTHESIS, 0), ")");
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT_PARENTHESIS, InputEvent.SHIFT_DOWN_MASK), "(");
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT_PARENTHESIS, InputEvent.SHIFT_DOWN_MASK), ")");
     setupLayout();
   }
 
