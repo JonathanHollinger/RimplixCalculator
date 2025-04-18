@@ -6,6 +6,8 @@ import java.io.IOException;
 
 import javax.swing.*;
 
+import gui.complexplane.ComplexPlaneGUI;
+
 /**
  * A window containing a PIN entry pad.
  */
@@ -50,6 +52,8 @@ public class PINPadWindow extends JFrame
     JMenuItem helpItem = new JMenuItem(HELP_MENU);
     helpItem.addActionListener(e -> runHelp());
     JMenuItem cPlane = new JMenuItem(CPLANE_MENU);
+    cPlane.addActionListener(e -> runComplexPlane());
+    
     exitItem.addActionListener(e -> System.exit(0));
     fileMenu.add(exitItem);
     helpMenu.add(aboutItem);
@@ -86,5 +90,9 @@ public class PINPadWindow extends JFrame
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
+  }
+  
+  private void runComplexPlane() {
+    new ComplexPlaneGUI();
   }
 }
