@@ -1,36 +1,28 @@
 package gui;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
-
-import javax.swing.*;
-
-import gui.complexplane.ComplexPlaneGUI;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 
 /**
  * A window containing a PIN entry pad.
  */
-public class PINPadWindow extends JFrame
-{
+public class PINPadWindow extends JFrame {
 
-  /**
-   * 
-   */
+  /** Serial version UID. */
   private static final long serialVersionUID = 1L;
-  private static final String EXIT_ITEM = "Exit";
-  private static final String FILE_MENU = "File";
-  private static final String HELP_MENU = "Help";
-  private static final String VIEW_MENU = "View"; 
-  private static final String ABOUT_MENU = "About"; 
-  private static final String CPLANE_MENU = "Complex Plane"; 
-
 
   /**
-   * Default Constructor.
-   */
-  public PINPadWindow()
-  {
+     * Default Constructor.
+     */
+  public PINPadWindow() {
     super();
     setupLayout();
     pack();
@@ -39,21 +31,22 @@ public class PINPadWindow extends JFrame
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
   }
 
-  private void setupLayout()
-  {
+  /**
+     * Set up the window layout.
+     */
+  private void setupLayout() {
     JMenuBar menuBar = new JMenuBar();
     setJMenuBar(menuBar);
 
-    JMenu fileMenu = new JMenu(FILE_MENU);
-    JMenu viewMenu = new JMenu(VIEW_MENU);
-    JMenu helpMenu = new JMenu(HELP_MENU);
-    JMenuItem exitItem = new JMenuItem(EXIT_ITEM);
-    JMenuItem aboutItem = new JMenuItem(ABOUT_MENU);
-    JMenuItem helpItem = new JMenuItem(HELP_MENU);
+    // Use translated menu labels from LanguageManager
+    JMenu fileMenu = new JMenu(LanguageManager.getFileMenuText());
+    JMenu viewMenu = new JMenu(LanguageManager.getViewMenuText());
+    JMenu helpMenu = new JMenu(LanguageManager.getHelpMenuText());
+    JMenuItem exitItem = new JMenuItem(LanguageManager.getExitItemText());
+    JMenuItem aboutItem = new JMenuItem(LanguageManager.getAboutMenuText());
+    JMenuItem helpItem = new JMenuItem(LanguageManager.getHelpMenuText());
     helpItem.addActionListener(e -> runHelp());
-    JMenuItem cPlane = new JMenuItem(CPLANE_MENU);
-    cPlane.addActionListener(e -> runComplexPlane());
-    
+    JMenuItem cPlane = new JMenuItem(LanguageManager.getComplexPlaneText());
     exitItem.addActionListener(e -> System.exit(0));
     fileMenu.add(exitItem);
     helpMenu.add(aboutItem);
@@ -83,20 +76,15 @@ public class PINPadWindow extends JFrame
     setIconImage(img.getImage());
   }
 
+  /**
+     * Opens the help file in the default browser.
+     */
   private void runHelp() {
     File file = new File("src/media/help.html");
-    try
-    {
+    try {
       Desktop.getDesktop().browse(file.toURI());
-    }
-    catch (IOException e)
-    {
-      // TODO Auto-generated catch block
+    } catch (IOException e) {
       e.printStackTrace();
     }
-  }
-  
-  private void runComplexPlane() {
-    new ComplexPlaneGUI();
   }
 }
