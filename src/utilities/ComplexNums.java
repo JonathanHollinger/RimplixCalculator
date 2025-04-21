@@ -190,5 +190,11 @@ public class ComplexNums implements Nums
 
 		return r.toString(); // If i is 0, return real number.
 	}
+	
+	public ComplexNums conjugate() {
+	    return new ComplexNums(this.val, -this.iMult);
+	}
+	
+	
 
 }

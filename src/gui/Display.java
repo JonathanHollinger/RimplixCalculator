@@ -20,6 +20,8 @@ import utilities.Check;
 import utilities.arithmetic.Evaluator;
 import utilities.arithmetic.Parser;
 import utilities.arithmetic.Token;
+import utilities.ComplexNums;
+
 
 public class Display extends JPanel implements ActionListener
 {
@@ -165,6 +167,27 @@ public class Display extends JPanel implements ActionListener
           contents = "";
           problem = "(" + evaluator.result().toString() + ")";
         }
+      }
+      case "Conj" -> {
+        if (areParenthesesBalanced(parentheses)) 
+        {
+    	  BufferedReader buf = new BufferedReader(new StringReader(problem));
+    	  List<Token> tokens = new ArrayList<>();
+    	  try 
+    	  {
+    	    tokens = Parser.parse(buf);
+    	  } 
+    	  catch (Exception e) 
+    	  {
+    	    System.err.print("Parsing Failed");
+    	  }
+    	  Evaluator eval = new Evaluator(tokens);
+          ComplexNums result = eval.result().conjugate();
+          expression += "<html>conj(" + contents + ") = " + result.toString().replace("i", "<i>i</i>") + "</html>";
+    	  evaluatedExpression = true;
+    	  contents = "";
+    	  problem = "(" + result.toString() + ")";
+    	}
       }
       default -> {
         if (ac.length() == 1 && Character.isDigit(ac.charAt(0)))
