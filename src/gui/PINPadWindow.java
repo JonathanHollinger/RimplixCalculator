@@ -81,7 +81,7 @@ public class PINPadWindow extends JFrame {
      */
   private void runHelp() {
     File file = new File("src/media/help.html");
-    try {
+    try { 
       Desktop.getDesktop().browse(file.toURI());
     } catch (IOException e) {
       e.printStackTrace();
