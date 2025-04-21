@@ -74,6 +74,10 @@ public class PINPadWindow extends JFrame
 
     NumberPad numberPad = new NumberPad(display);
     contentPane.add(numberPad, BorderLayout.CENTER);
+    
+    CollapsiblePanel test = new CollapsiblePanel("History");
+    contentPane.add(test, BorderLayout.SOUTH);
+
 
     ImageIcon img = new ImageIcon("src/media/iconRimplex.png");
     setIconImage(img.getImage());
