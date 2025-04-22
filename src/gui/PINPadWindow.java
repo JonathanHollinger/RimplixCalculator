@@ -3,87 +3,158 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Desktop;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
+import java.util.List;
 
-/**
- * A window containing a PIN entry pad.
- */
-public class PINPadWindow extends JFrame {
+import javax.swing.*;
+import javax.swing.TransferHandler;
 
-  /** Serial version UID. */
+import utilities.Engine;
+
+public class PINPadWindow extends JFrame implements Engine
+{
+
   private static final long serialVersionUID = 1L;
+  private Display display;
+  private DefaultListModel<String> historyListModel;
+  private JList<String> historyList;
 
-  /**
-     * Default Constructor.
-     */
-  public PINPadWindow() {
+  public PINPadWindow()
+  {
     super();
     setupLayout();
     pack();
     setResizable(true);
-    setSize(300, 400);
+    setSize(600, 500);
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    setTitle("RimpleX");
   }
 
-  /**
-     * Set up the window layout.
-     */
-  private void setupLayout() {
-    JMenuBar menuBar = new JMenuBar();
-    setJMenuBar(menuBar);
-
-    // Use translated menu labels from LanguageManager
-    JMenu fileMenu = new JMenu(LanguageManager.getFileMenuText());
-    JMenu viewMenu = new JMenu(LanguageManager.getViewMenuText());
-    JMenu helpMenu = new JMenu(LanguageManager.getHelpMenuText());
-    JMenuItem exitItem = new JMenuItem(LanguageManager.getExitItemText());
-    JMenuItem aboutItem = new JMenuItem(LanguageManager.getAboutMenuText());
-    JMenuItem helpItem = new JMenuItem(LanguageManager.getHelpMenuText());
-    helpItem.addActionListener(e -> runHelp());
-    JMenuItem cPlane = new JMenuItem(LanguageManager.getComplexPlaneText());
-    exitItem.addActionListener(e -> System.exit(0));
-    fileMenu.add(exitItem);
-    helpMenu.add(aboutItem);
-    helpMenu.add(helpItem);
-    viewMenu.add(cPlane);
-    menuBar.add(fileMenu);
-    menuBar.add(viewMenu);
-    menuBar.add(helpMenu);
-
-    setSize(600, 500);
-    setTitle("RimpleX");
+  private void setupLayout()
+  {
+    setJMenuBar(createMenuBar());
 
     Container contentPane = getContentPane();
     contentPane.setLayout(new BorderLayout());
 
-    Display display = new Display();
+    display = new Display();
     contentPane.add(display, BorderLayout.NORTH);
+    display.addHistoryListener(this);
 
     NumberPad numberPad = new NumberPad(display);
     contentPane.add(numberPad, BorderLayout.CENTER);
-    
-    CollapsiblePanel test = new CollapsiblePanel("History");
-    contentPane.add(test, BorderLayout.SOUTH);
 
+    CollapsiblePanel historyPanel = new CollapsiblePanel("History");
+    historyListModel = new DefaultListModel<>();
+    historyList = new JList<>(historyListModel);
+    historyList.setFocusable(true);
+    historyList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    historyList.setVisibleRowCount(5);
+    historyList.setDragEnabled(true);
+    historyList.setTransferHandler(new TransferHandler("selectedValue"));
+
+    InputMap inputMap = historyList.getInputMap(JList.WHEN_FOCUSED);
+    ActionMap actionMap = historyList.getActionMap();
+
+    inputMap.put(KeyStroke.getKeyStroke("ctrl C"), "copyHistoryItem");
+    actionMap.put("copyHistoryItem", new AbstractAction()
+    {
+      @Override
+      public void actionPerformed(ActionEvent e)
+      {
+        String selected = historyList.getSelectedValue();
+        if (selected != null)
+        {
+          Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+          clipboard.setContents(new java.awt.datatransfer.StringSelection(selected), null);
+        }
+      }
+    });
+
+    inputMap.put(KeyStroke.getKeyStroke("ctrl V"), "pasteHistoryItem");
+    actionMap.put("pasteHistoryItem", new AbstractAction()
+    {
+      @Override
+      public void actionPerformed(ActionEvent e)
+      {
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        try
+        {
+          String selected = (String) clipboard.getData(DataFlavor.stringFlavor);
+          if (selected != null && !selected.isBlank())
+          {
+            display.setInputFromHistory(selected.trim());
+          }
+        }
+        catch (UnsupportedFlavorException | IOException ex)
+        {
+          ex.printStackTrace();
+        }
+      }
+    });
+
+    JScrollPane scrollPane = new JScrollPane(historyList);
+    historyPanel.getContentPane().setLayout(new BorderLayout());
+    historyPanel.getContentPane().add(scrollPane, BorderLayout.CENTER);
+    contentPane.add(historyPanel, BorderLayout.SOUTH);
 
     ImageIcon img = new ImageIcon("src/media/iconRimplex.png");
     setIconImage(img.getImage());
   }
 
-  /**
-     * Opens the help file in the default browser.
-     */
-  private void runHelp() {
+  private JMenuBar createMenuBar()
+  {
+    JMenuBar menuBar = new JMenuBar();
+
+    JMenu fileMenu = new JMenu(LanguageManager.getFileMenuText());
+    JMenu viewMenu = new JMenu(LanguageManager.getViewMenuText());
+    JMenu helpMenu = new JMenu(LanguageManager.getHelpMenuText());
+
+    JMenuItem exitItem = new JMenuItem(LanguageManager.getExitItemText());
+    exitItem.addActionListener(e -> System.exit(0));
+
+    JMenuItem aboutItem = new JMenuItem(LanguageManager.getAboutMenuText());
+    JMenuItem helpItem = new JMenuItem(LanguageManager.getHelpMenuText());
+    helpItem.addActionListener(e -> runHelp());
+
+    JMenuItem cPlane = new JMenuItem(LanguageManager.getComplexPlaneText());
+
+    fileMenu.add(exitItem);
+    helpMenu.add(aboutItem);
+    helpMenu.add(helpItem);
+    viewMenu.add(cPlane);
+
+    menuBar.add(fileMenu);
+    menuBar.add(viewMenu);
+    menuBar.add(helpMenu);
+
+    return menuBar;
+  }
+
+  public void onHistoryUpdated(List<String> history)
+  {
+    historyListModel.clear();
+    for (String entry : history)
+    {
+      historyListModel.addElement(entry);
+    }
+  }
+
+  private void runHelp()
+  {
     File file = new File("src/media/help.html");
-    try { 
+    try
+    {
       Desktop.getDesktop().browse(file.toURI());
-    } catch (IOException e) {
+    }
+    catch (IOException e)
+    {
       e.printStackTrace();
     }
   }
