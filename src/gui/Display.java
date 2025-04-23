@@ -36,6 +36,8 @@ public class Display extends JPanel implements ActionListener
   private static final String LEFT_P = "(";
   private static final String RIGHT_P = ")";
   private static final String EQUALS = "=";
+  private static final String CONJUGATE = "Conj";
+  private static final String INVERSE = "Inv";
 
   private final Map<String, String> history = new LinkedHashMap<>();
   private final List<Engine> historyListeners = new ArrayList<>();
@@ -76,6 +78,8 @@ public class Display extends JPanel implements ActionListener
       }
       case I -> appendToProblem(I);
       case EQUALS -> evaluateExpression();
+      case CONJUGATE -> conjugate();
+      case INVERSE -> invert();
       default -> handleInput(ac);
     }
     updateDisplay();
@@ -283,6 +287,90 @@ public class Display extends JPanel implements ActionListener
     {
       contents = contents.startsWith("-") ? contents.substring(1) : "-" + contents;
     }
+  }
+  
+  private void conjugate()
+  {
+    if (contents.isEmpty())
+      return;
+    try
+    {
+      String parsedInput = contents
+        .replaceAll("(?<=\\W|^)i", "1i")
+        .replaceAll("\\+i", "+1i")
+        .replaceAll("-i", "-1i");
+
+      if (parsedInput.startsWith("-"))
+        parsedInput = "0" + parsedInput;
+
+      parsedInput = "(" + parsedInput + ")";
+
+      System.out.println("Normalized input: " + parsedInput);
+
+      List<Token> tokens = Parser.parse(new BufferedReader(new StringReader(parsedInput)));
+      Evaluator evaluator = new Evaluator(tokens);
+      var result = evaluator.result();
+
+      if (result != null)
+      {
+        String output = result.conjugate().toString();
+        expression = "conj(" + contents + ") = " + output;
+        problem = output;
+        contents = "";
+        evaluatedExpression = true;
+      }
+      else
+      {
+        System.err.println("Conjugate Failed: Evaluator returned null result.");
+      }
+    }
+    catch (Exception e)
+    {
+      System.err.println("Conjugate Failed: " + e.getMessage());
+    }
+
+    updateDisplay();
+  }
+  
+  private void invert()
+  {
+    if (contents.isEmpty())
+      return;
+    try
+    {
+      String parsedInput = contents
+        .replaceAll("(?<=\\W|^)i", "1i")
+        .replaceAll("\\+i", "+1i")
+        .replaceAll("-i", "-1i");
+
+      if (parsedInput.startsWith("-"))
+        parsedInput = "0" + parsedInput;
+
+      parsedInput = "(" + parsedInput + ")";
+
+      List<Token> tokens = Parser.parse(new BufferedReader(new StringReader(parsedInput)));
+      Evaluator evaluator = new Evaluator(tokens);
+      var result = evaluator.result();
+
+      if (result != null)
+      {
+        String output = result.invert().toString();
+        expression = "inv(" + contents + ") = " + output;
+        problem = output;
+        contents = "";
+        evaluatedExpression = true;
+      }
+      else
+      {
+        System.err.println("Inverse Failed: Evaluator returned null result.");
+      }
+    }
+    catch (Exception e)
+    {
+      System.err.println("Inverse Failed: " + e.getMessage());
+    }
+
+    updateDisplay();
   }
 
   private void updateDisplay()

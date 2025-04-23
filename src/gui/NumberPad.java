@@ -99,11 +99,30 @@ public class NumberPad extends JPanel
     c.gridwidth = 2;
     c.gridheight = 1;
     add(button, c);
+  }
+  
+  private void addSmallButton (String text, int x, int y) {
+    JButton button = new JButton(text);
+    button.setFont(BUTTON_FONT);
+    button.addActionListener(listener);
+    ActionMap actionMap = this.getActionMap();
+    actionMap.put(text, new ClickAction(button));
+    GridBagConstraints c = new GridBagConstraints();
+    c.gridx = x;
+    c.gridy = y;
+    c.gridwidth = 0;
+    c.weightx = 1.0;
+    c.weighty = 1.0;
+    c.fill = GridBagConstraints.NONE;
+    c.gridwidth = 1;
+    c.gridheight = 1;
+    add(button, c);
 
   }
 
   private void setupLayout()
   {
+    
 
     setLayout(new GridBagLayout());
     GridBagConstraints c = new GridBagConstraints();
@@ -132,6 +151,12 @@ public class NumberPad extends JPanel
     addButton("i", 2, 4);
     addButton("=", 3, 4);
     addButton(".", 4, 4);
+    addButton("Inv", 0, 5);
+    addButton("CHG", 1, 5);
+    addButton("CHG", 2, 5);
+    addButton("CHG", 3, 5);
+    addButton("CHG", 4, 5);
+    addSmallButton(">", 5, 2);
 
   }
 }
