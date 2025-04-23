@@ -162,4 +162,25 @@ public class TestEvaluator
 		}
 	}
 
+	@Test
+	public void testNegative()
+	{
+		String expr = "(-3 + 1) - 2"; // Should evaluate to 6 + 12i
+		BufferedReader reader = new BufferedReader(new StringReader(expr));
+
+		try
+		{
+			List<Token> tokens = Parser.parse(reader);
+			Evaluator evaluator = new Evaluator(tokens);
+			ComplexNums result = evaluator.result();
+
+			assertEquals(0.0, result.getIConst(), 0.0001); // Imaginary part
+			assertEquals(-4.0, result.getVal(), 0.0001); // Real part
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			assert false : "Exception occurred during complex number evaluation";
+		}
+	}
+
 }

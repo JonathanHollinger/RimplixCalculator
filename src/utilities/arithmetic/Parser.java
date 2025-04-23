@@ -10,7 +10,7 @@ public abstract class Parser
 
 	public enum Expression
 	{
-		ADD, SUBTRACT, MULTIPLY, DIVIDE, LEFT_PAREN, RIGHT_PAREN, NUMBER
+		ADD, SUBTRACT, MULTIPLY, DIVIDE, LEFT_PAREN, RIGHT_PAREN, NEGATE, NUMBER
 	}
 
 	public static List<Token> parse(BufferedReader in) throws IOException
@@ -42,8 +42,16 @@ public abstract class Parser
 				tokens.add(new Token(Expression.ADD, null));
 				break;
 			case '-':
-				tokens.add(new Token(Expression.SUBTRACT, null));
+				if (!tokens.isEmpty() && (tokens.getLast().type == Expression.NUMBER
+						|| tokens.getLast().type == Expression.RIGHT_PAREN))
+				{
+					tokens.add(new Token(Expression.SUBTRACT, null));
+				} else
+				{
+					tokens.add(new Token(Expression.NEGATE, null));
+				}
 				break;
+
 			case 'x':
 				tokens.add(new Token(Expression.MULTIPLY, null));
 				break;

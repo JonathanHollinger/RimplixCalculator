@@ -45,6 +45,7 @@ public class Evaluator
 			case SUBTRACT:
 			case MULTIPLY:
 			case DIVIDE:
+			case NEGATE:
 				while (!operators.isEmpty()
 						&& isHigherPrecedence(operators.peek(), token))
 				{
@@ -118,6 +119,11 @@ public class Evaluator
 				}
 				break;
 
+			case NEGATE:
+				ComplexNums x = stack.pop();
+				stack.push(new ComplexNums(-x.getVal(), -x.getIConst()));
+				break;
+
 			case ADD:
 			case SUBTRACT:
 			case MULTIPLY:
@@ -163,6 +169,8 @@ public class Evaluator
 	{
 		switch (type)
 		{
+		case NEGATE:
+			return 3;
 		case MULTIPLY:
 		case DIVIDE:
 			return 2;
