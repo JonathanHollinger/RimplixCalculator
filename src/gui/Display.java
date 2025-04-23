@@ -81,6 +81,16 @@ public class Display extends JPanel implements ActionListener
     updateDisplay();
   }
 
+  public String getPrintableHistory()
+  {
+    StringBuilder sb = new StringBuilder();
+    for (Map.Entry<String, String> entry : history.entrySet())
+    {
+      sb.append(entry.getKey()).append("\n");
+    }
+    return sb.toString();
+  }
+
   private void clearAll()
   {
     problem = contents = expression = parentheses = "";

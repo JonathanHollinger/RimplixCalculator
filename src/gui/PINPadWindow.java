@@ -119,6 +119,10 @@ public class PINPadWindow extends JFrame implements Engine
     JMenuItem exitItem = new JMenuItem(LanguageManager.getExitItemText());
     exitItem.addActionListener(e -> System.exit(0));
 
+    JMenuItem printItem = new JMenuItem("Print History");
+    printItem.addActionListener(e -> showPrintDialog());
+    fileMenu.add(printItem);
+
     JMenuItem aboutItem = new JMenuItem(LanguageManager.getAboutMenuText());
     JMenuItem helpItem = new JMenuItem(LanguageManager.getHelpMenuText());
     helpItem.addActionListener(e -> runHelp());
@@ -158,4 +162,27 @@ public class PINPadWindow extends JFrame implements Engine
       e.printStackTrace();
     }
   }
+
+  private void showPrintDialog()
+  {
+    JTextArea textArea = new JTextArea(display.getPrintableHistory());
+    textArea.setEditable(false);
+
+    try
+    {
+      boolean printed = textArea.print(null, null, true, null, null, true);
+      if (!printed)
+      {
+        JOptionPane.showMessageDialog(this, "Printing canceled", "Print",
+            JOptionPane.INFORMATION_MESSAGE);
+      }
+    }
+    catch (Exception ex)
+    {
+      ex.printStackTrace();
+      JOptionPane.showMessageDialog(this, "Print failed: " + ex.getMessage(), "Print Error",
+          JOptionPane.ERROR_MESSAGE);
+    }
+  }
+
 }
