@@ -32,7 +32,7 @@ public class PINPadWindow extends JFrame implements Engine
     setupLayout();
     pack();
     setResizable(true);
-    setSize(700,500);
+    setSize(700, 500);
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     setTitle("RimpleX");
   }
@@ -40,7 +40,7 @@ public class PINPadWindow extends JFrame implements Engine
   private void setupLayout()
   {
     setJMenuBar(createMenuBar());
-    
+
     CollapsiblePanel historyPanel = new CollapsiblePanel("History");
 
     Container contentPane = getContentPane();
@@ -52,7 +52,7 @@ public class PINPadWindow extends JFrame implements Engine
 
     NumberPad numberPad = new NumberPad(display);
     contentPane.add(numberPad, BorderLayout.CENTER);
-    
+
     historyListModel = new DefaultListModel<>();
     historyList = new JList<>(historyListModel);
     historyList.setFocusable(true);
@@ -61,7 +61,7 @@ public class PINPadWindow extends JFrame implements Engine
     historyList.setDragEnabled(true);
     historyList.setTransferHandler(new TransferHandler("selectedValue"));
 
-    InputMap inputMap = historyList.getInputMap(JList.WHEN_FOCUSED);
+    InputMap inputMap = historyList.getInputMap(JComponent.WHEN_FOCUSED);
     ActionMap actionMap = historyList.getActionMap();
 
     inputMap.put(KeyStroke.getKeyStroke("ctrl C"), "copyHistoryItem");
@@ -74,6 +74,7 @@ public class PINPadWindow extends JFrame implements Engine
         if (selected != null)
         {
           Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+          System.out.println("copying: " + selected); // <-- Debug
           clipboard.setContents(new java.awt.datatransfer.StringSelection(selected), null);
         }
       }
@@ -88,6 +89,7 @@ public class PINPadWindow extends JFrame implements Engine
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         try
         {
+          System.out.println("Pasting: "); // <-- Debug
           String selected = (String) clipboard.getData(DataFlavor.stringFlavor);
           if (selected != null && !selected.isBlank())
           {
@@ -187,19 +189,20 @@ public class PINPadWindow extends JFrame implements Engine
           JOptionPane.ERROR_MESSAGE);
     }
   }
-  
-  public void resizeBig() {
-    setSize(700,500);
+
+  public void resizeBig()
+  {
+    setSize(700, 500);
   }
-  
-  public void resizeSmall() {
-    setSize(380,500);
+
+  public void resizeSmall()
+  {
+    setSize(380, 500);
   }
-  
-  public void runComplexPlane() {
+
+  public void runComplexPlane()
+  {
     new ComplexPlaneGUI();
   }
-  
-  
 
 }
