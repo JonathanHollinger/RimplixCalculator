@@ -27,12 +27,14 @@ public class ComplexPlaneGUI extends JFrame
     GraphPanel graphPanel = new GraphPanel();
     getContentPane().add(graphPanel, BorderLayout.CENTER);
 
-    if (num == null) 
+    double size = Math.max(num.getIConst(), num.getVal());
+    
+    if (num == null || size < 9) 
     {
       setSize(910, 940); //Size to be static to keep lines together
     } else 
     {
-      double size = Math.max(num.getIConst(), num.getVal());
+      
       setSize((int) size * 100 + 510, (int) size * 100 + 540);
     }
 

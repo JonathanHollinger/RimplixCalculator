@@ -9,6 +9,7 @@ import java.util.*;
 import java.util.List;
 import javax.swing.*;
 
+import gui.complexplane.ComplexPlaneGUI;
 import utilities.Check;
 import utilities.Engine;
 import utilities.arithmetic.Evaluator;
@@ -188,6 +189,7 @@ public class Display extends JPanel implements ActionListener
       }
 
       expression = displayKey;
+      ComplexPlaneGUI.setNum(evaluator.result());
       contents = "";
       problem = result;
       evaluatedExpression = true;

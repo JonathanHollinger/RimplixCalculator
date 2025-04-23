@@ -15,6 +15,7 @@ import java.util.List;
 import javax.swing.*;
 import javax.swing.TransferHandler;
 
+import gui.complexplane.ComplexPlaneGUI;
 import utilities.Engine;
 
 public class PINPadWindow extends JFrame implements Engine
@@ -129,6 +130,7 @@ public class PINPadWindow extends JFrame implements Engine
     helpItem.addActionListener(e -> runHelp());
 
     JMenuItem cPlane = new JMenuItem(LanguageManager.getComplexPlaneText());
+    cPlane.addActionListener(e -> runComplexPlane());
 
     fileMenu.add(exitItem);
     helpMenu.add(aboutItem);
@@ -192,6 +194,10 @@ public class PINPadWindow extends JFrame implements Engine
   
   public void resizeSmall() {
     setSize(380,500);
+  }
+  
+  public void runComplexPlane() {
+    new ComplexPlaneGUI();
   }
   
   
