@@ -15,6 +15,8 @@ import utilities.Engine;
 import utilities.arithmetic.Evaluator;
 import utilities.arithmetic.Parser;
 import utilities.arithmetic.Token;
+import utilities.ComplexNums;
+import utilities.Nums;
 
 public class Display extends JPanel implements ActionListener
 {
@@ -40,6 +42,8 @@ public class Display extends JPanel implements ActionListener
   private static final String EQUALS = "=";
   private static final String CONJUGATE = "Conj";
   private static final String INVERSE = "Inv";
+  private static final String POLAR = "Pol";
+
 
   private final Map<String, String> history = new LinkedHashMap<>();
   private final List<Engine> historyListeners = new ArrayList<>();
@@ -90,6 +94,9 @@ public class Display extends JPanel implements ActionListener
       case EQUALS -> evaluateExpression();
       case CONJUGATE -> conjugate();
       case INVERSE -> invert();
+      case POLAR -> toggleMode();
+      case "∠" -> appendToProblem("∠");
+      case "°" -> appendToProblem("°");
       case ">" -> resizeBig();
       case "<" -> resizeSmall();
       default -> handleInput(ac);
@@ -168,33 +175,102 @@ public class Display extends JPanel implements ActionListener
   {
     if (!areParenthesesBalanced(parentheses))
       return;
+
     try
     {
+      String originalInput = problem;
+      String originalPolar = null;
+
+      if (problem.trim().matches("^-?\\d+(\\.\\d+)?\\s*∠\\s*-?\\d+(\\.\\d+)?\\s*°$"))
+      {
+        try
+        {
+          String[] parts = problem.replace("°", "").split("∠");
+          double r = Double.parseDouble(parts[0].trim());
+          double thetaDeg = Double.parseDouble(parts[1].trim());
+          double thetaRad = Math.toRadians(thetaDeg);
+          double real = r * Math.cos(thetaRad);
+          double imag = r * Math.sin(thetaRad);
+          if (Math.abs(real) < 1e-10) real = 0;
+          if (Math.abs(imag) < 1e-10) imag = 0;
+
+          System.out.printf("Parsed polar input: r=%.2f, θ=%.2f°, real=%.2f, imag=%.2f%n",
+            r, thetaDeg, real, imag);
+
+          problem = real + (imag >= 0 ? "+" : "") + imag + "i";
+          contents = problem;
+          originalPolar = parts[0].trim() + "∠" + parts[1].trim() + "°";
+        }
+        catch (Exception e)
+        {
+          System.err.println("Failed to parse polar input: " + e.getMessage());
+          return;
+        }
+      }
+
+      problem = problem
+        .replaceAll("(?<=\\W|^)-i", "-1i")
+        .replaceAll("(?<=\\W|^)\\+i", "+1i")
+        .replaceAll("(?<=\\W|^)i", "1i");
+
+      if (!problem.contains("i") && problem.startsWith("-"))
+        problem = "0" + problem;
+
+      System.out.println("Final problem: " + problem);
+
       List<Token> tokens = Parser.parse(new BufferedReader(new StringReader(problem)));
       Evaluator evaluator = new Evaluator(tokens);
-      String result = evaluator.result().toString();
-      String displayKey = expression + contents + " = " + result;
+      var result = evaluator.result();
+
+      String resultStr = isPolarMode ? formatAsPolar(result) : formatAsRectangular(result);
+      String lhs = (originalPolar != null) ? originalPolar : originalInput;
+      String displayKey = lhs + " = " + resultStr;
 
       history.put(displayKey, problem);
       for (Engine listener : historyListeners)
-      {
         listener.onHistoryUpdated(new ArrayList<>(history.keySet()));
-      }
 
       expression = displayKey;
-      ComplexPlaneGUI.setNum(evaluator.result());
+      ComplexPlaneGUI.setNum(result);
+      String chainInput = formatAsRectangular(result);
+      problem = chainInput;
       contents = "";
-      problem = result;
       evaluatedExpression = true;
     }
     catch (Exception e)
     {
       System.err.println("Parsing Failed: " + e.getMessage());
     }
+
+    updateDisplay();
+  }
+  
+  private String formatAsRectangular(ComplexNums result)
+  {
+    double real = result.getVal();
+    double imag = result.getIConst();
+
+    if (Math.abs(real) < 1e-10) real = 0;
+    if (Math.abs(imag) < 1e-10) imag = 0;
+
+    String realStr = String.format("%.2f", real);
+    String imagStr = String.format("%.2f", Math.abs(imag));
+
+    if (imag > 0)
+      return real == 0 ? imagStr + "i" : realStr + "+" + imagStr + "i";
+    else if (imag < 0)
+      return real == 0 ? "-" + imagStr + "i" : realStr + "-" + imagStr + "i";
+
+    return realStr;
   }
 
   private void handleInput(String ac)
   {
+	if (ac.contains("∠") && (!contents.isEmpty() || !problem.isEmpty()))
+	{
+	  System.err.println("Cannot mix polar input with a rectangular expression.");
+	  return;
+	}
     if (ac.length() == 1 && Character.isDigit(ac.charAt(0)))
     {
       if (evaluatedExpression)
@@ -320,15 +396,16 @@ public class Display extends JPanel implements ActionListener
 
       parsedInput = "(" + parsedInput + ")";
 
-      System.out.println("Normalized input: " + parsedInput);
-
       List<Token> tokens = Parser.parse(new BufferedReader(new StringReader(parsedInput)));
       Evaluator evaluator = new Evaluator(tokens);
       var result = evaluator.result();
 
-      if (result != null)
+      if (result instanceof ComplexNums)
       {
-        String output = result.conjugate().toString();
+        ComplexNums complex = (ComplexNums) result;
+        ComplexNums conj = complex.conjugate();
+        String output = conj.formattedString();
+
         expression = "conj(" + contents + ") = " + output;
         problem = output;
         contents = "";
@@ -336,7 +413,7 @@ public class Display extends JPanel implements ActionListener
       }
       else
       {
-        System.err.println("Conjugate Failed: Evaluator returned null result.");
+        System.err.println("Conjugate Failed: Result not a ComplexNums.");
       }
     }
     catch (Exception e)
@@ -367,9 +444,12 @@ public class Display extends JPanel implements ActionListener
       Evaluator evaluator = new Evaluator(tokens);
       var result = evaluator.result();
 
-      if (result != null)
+      if (result instanceof ComplexNums)
       {
-        String output = result.invert().toString();
+        ComplexNums complex = (ComplexNums) result;
+        ComplexNums inv = complex.invert();
+        String output = inv.formattedString();
+
         expression = "inv(" + contents + ") = " + output;
         problem = output;
         contents = "";
@@ -377,7 +457,7 @@ public class Display extends JPanel implements ActionListener
       }
       else
       {
-        System.err.println("Inverse Failed: Evaluator returned null result.");
+        System.err.println("Inverse Failed: Result not a ComplexNums.");
       }
     }
     catch (Exception e)
@@ -387,22 +467,50 @@ public class Display extends JPanel implements ActionListener
 
     updateDisplay();
   }
+  
+  private boolean isPolarMode = false;
+  
+  private void toggleMode()
+  {
+    isPolarMode = !isPolarMode;
+    updateDisplay();
+  }
+  
+  private String formatAsPolar(Nums complex)
+  {
+    if (!(complex instanceof ComplexNums))
+      return "Invalid";
+
+    ComplexNums c = (ComplexNums) complex;
+    double real = c.getVal();
+    double imag = c.getIConst();
+
+    double r = Math.hypot(real, imag);
+    double theta = Math.toDegrees(Math.atan2(imag, real));
+    if (theta < 0)
+      theta += 360;
+
+    r = Math.round(r * 1000.0) / 1000.0;
+    theta = Math.round(theta * 100.0) / 100.0;
+
+    return r + "∠" + theta + "°";
+  }
 
   private void updateDisplay()
   {
     expressionLabel.setText(expression.isEmpty() ? " " : expression);
+
     if (contents.isEmpty())
     {
       inputLabel.setForeground(Color.GRAY);
       inputLabel.setText(LanguageManager.getEnterComplexNumberText());
+      return;
     }
-    else
-    {
-      inputLabel.setForeground(Color.BLACK);
-      inputLabel
-          .setText(contents.contains("i") ? "<html>" + contents.replace("i", "<i>i</i>") + "</html>"
-              : contents);
-    }
+
+    inputLabel.setForeground(Color.BLACK);
+    inputLabel.setText(contents.contains("i")
+        ? "<html>" + contents.replace("i", "<i>i</i>") + "</html>"
+        : contents);
   }
   
   private void resizeBig()

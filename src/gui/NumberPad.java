@@ -159,8 +159,8 @@ public class NumberPad extends JPanel
     addButton(".", 4, 4);
     addButton("Conj", 5, 0);
     addButton("Pol", 5, 1);
-//    addButton("CHG", 2, 5);
-//    addButton("CHG", 3, 5);
+    addButton("∠", 5, 2);
+    addButton("°", 5, 3);
 //    addButton("CHG", 4, 5);
     addSmallButton(">", 6, 2);
 
