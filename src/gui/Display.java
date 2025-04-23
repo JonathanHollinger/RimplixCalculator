@@ -119,11 +119,13 @@ public class Display extends JPanel implements ActionListener
   private void clearAll()
   {
     problem = contents = expression = parentheses = "";
+    evaluatedExpression = false;
   }
 
   private void resetExpression()
   {
     expression = parentheses = "";
+    evaluatedExpression = false;
   }
 
   private void addLeftParenthesis()
