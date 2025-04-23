@@ -57,7 +57,7 @@ public class PINPadWindow extends JFrame implements Engine
     historyList = new JList<>(historyListModel);
     historyList.setFocusable(true);
     historyList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    historyList.setVisibleRowCount(5);
+    historyList.setVisibleRowCount(20);
     historyList.setDragEnabled(true);
     historyList.setTransferHandler(new TransferHandler("selectedValue"));
 
