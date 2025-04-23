@@ -90,24 +90,8 @@ public class Display extends JPanel implements ActionListener
       case EQUALS -> evaluateExpression();
       case CONJUGATE -> conjugate();
       case INVERSE -> invert();
-      case ">" -> {
-        NumberPad.changeText();
-        historyPanel.setCollapsed(!historyPanel.isCollapsed());
-        // PINPadWindow.setSize(700, 500);
-        for (Engine listener : historyListeners)
-        {
-          listener.resizeBig();;
-        }
-      }
-      case "<" -> {
-        NumberPad.changeText();
-        historyPanel.setCollapsed(!historyPanel.isCollapsed());
-        // PINPadWindow.setSize(380, 500);
-        for (Engine listener : historyListeners)
-        {
-          listener.resizeSmall();
-        }
-      }
+      case ">" -> resizeBig();
+      case "<" -> resizeSmall();
       default -> handleInput(ac);
     }
     updateDisplay();
@@ -423,11 +407,24 @@ public class Display extends JPanel implements ActionListener
   
   private void resizeBig()
   {
-    setSize(700, 500);
+    NumberPad.changeText();
+    historyPanel.setCollapsed(!historyPanel.isCollapsed());
+    // PINPadWindow.setSize(700, 500);
+    for (Engine listener : historyListeners)
+    {
+      listener.resizeBig();;
+    }
   }
 
   private void resizeSmall()
   {
-    setSize(380, 500);
+    NumberPad.changeText();
+    historyPanel.setCollapsed(!historyPanel.isCollapsed());
+    // PINPadWindow.setSize(380, 500);
+    for (Engine listener : historyListeners)
+    {
+      listener.resizeSmall();
+    }
   }
+  
 }
