@@ -31,7 +31,7 @@ public class PINPadWindow extends JFrame implements Engine
     setupLayout();
     pack();
     setResizable(true);
-    setSize(380, 500);
+    setSize(700,500);
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     setTitle("RimpleX");
   }
@@ -39,18 +39,19 @@ public class PINPadWindow extends JFrame implements Engine
   private void setupLayout()
   {
     setJMenuBar(createMenuBar());
+    
+    CollapsiblePanel historyPanel = new CollapsiblePanel("History");
 
     Container contentPane = getContentPane();
     contentPane.setLayout(new BorderLayout());
 
-    display = new Display();
+    display = new Display(historyPanel);
     contentPane.add(display, BorderLayout.NORTH);
     display.addHistoryListener(this);
 
     NumberPad numberPad = new NumberPad(display);
     contentPane.add(numberPad, BorderLayout.CENTER);
-
-    CollapsiblePanel historyPanel = new CollapsiblePanel("History");
+    
     historyListModel = new DefaultListModel<>();
     historyList = new JList<>(historyListModel);
     historyList.setFocusable(true);
@@ -102,7 +103,7 @@ public class PINPadWindow extends JFrame implements Engine
     JScrollPane scrollPane = new JScrollPane(historyList);
     historyPanel.getContentPane().setLayout(new BorderLayout());
     historyPanel.getContentPane().add(scrollPane, BorderLayout.CENTER);
-    contentPane.add(historyPanel, BorderLayout.SOUTH);
+    contentPane.add(historyPanel, BorderLayout.EAST);
 
     ImageIcon img = new ImageIcon("src/media/iconRimplex.png");
     setIconImage(img.getImage());
@@ -184,5 +185,15 @@ public class PINPadWindow extends JFrame implements Engine
           JOptionPane.ERROR_MESSAGE);
     }
   }
+  
+  public void resizeBig() {
+    setSize(700,500);
+  }
+  
+  public void resizeSmall() {
+    setSize(380,500);
+  }
+  
+  
 
 }

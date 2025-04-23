@@ -18,6 +18,10 @@ public class NumberPad extends JPanel
   private static final Font BUTTON_FONT = new Font("DejaVu Sans", Font.PLAIN, 12);
 
   ActionListener listener;
+  
+  static Boolean extended;
+  
+  static JButton open;
 
   /**
    * Default Constructor
@@ -27,6 +31,8 @@ public class NumberPad extends JPanel
     super();
 
     this.listener = listener;
+    
+    extended = false;
 
     // 0 means it needs no modifier, the shift down means it works when shift is held down.
     InputMap inputMap  = this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
@@ -102,11 +108,11 @@ public class NumberPad extends JPanel
   }
   
   private void addSmallButton (String text, int x, int y) {
-    JButton button = new JButton(text);
-    button.setFont(BUTTON_FONT);
-    button.addActionListener(listener);
+    open = new JButton(text);
+    open.setFont(BUTTON_FONT);
+    open.addActionListener(listener);
     ActionMap actionMap = this.getActionMap();
-    actionMap.put(text, new ClickAction(button));
+    actionMap.put("small", new ClickAction(open));
     GridBagConstraints c = new GridBagConstraints();
     c.gridx = x;
     c.gridy = y;
@@ -116,7 +122,7 @@ public class NumberPad extends JPanel
     c.fill = GridBagConstraints.NONE;
     c.gridwidth = 1;
     c.gridheight = 1;
-    add(button, c);
+    add(open, c);
 
   }
 
@@ -158,5 +164,15 @@ public class NumberPad extends JPanel
     addButton("CHG", 4, 5);
     addSmallButton(">", 5, 2);
 
+  }
+  
+  static void changeText() {
+    if (extended) {
+      open.setText(">");
+      extended = false;
+    } else {
+      open.setText("<");
+      extended = true;
+    }
   }
 }

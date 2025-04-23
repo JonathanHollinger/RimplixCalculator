@@ -27,6 +27,7 @@ public class Display extends JPanel implements ActionListener
 
   private JLabel expressionLabel;
   private JLabel inputLabel;
+  private JLabel imageLabel;
 
   private static final String CLEAR = "C";
   private static final String RESET = "R";
@@ -41,8 +42,10 @@ public class Display extends JPanel implements ActionListener
 
   private final Map<String, String> history = new LinkedHashMap<>();
   private final List<Engine> historyListeners = new ArrayList<>();
+  
+  CollapsiblePanel historyPanel;
 
-  public Display()
+  public Display(CollapsiblePanel historyPanel)
   {
     setLayout(new BorderLayout());
     setBorder(BorderFactory.createEtchedBorder());
@@ -54,9 +57,15 @@ public class Display extends JPanel implements ActionListener
     inputLabel = new JLabel(LanguageManager.getEnterComplexNumberText(), SwingConstants.RIGHT);
     inputLabel.setFont(new Font("Arial", Font.BOLD, 20));
     inputLabel.setForeground(Color.GRAY);
-
-    add(expressionLabel, BorderLayout.NORTH);
+    
+    ImageIcon img = new ImageIcon("src/media/logoRimplex.png");
+    imageLabel = new JLabel(img, SwingConstants.LEFT);
+    
+    add(imageLabel, BorderLayout.NORTH);
+    add(expressionLabel, BorderLayout.CENTER);
     add(inputLabel, BorderLayout.SOUTH);
+    
+    this.historyPanel = historyPanel;
   }
 
   @Override
@@ -80,6 +89,17 @@ public class Display extends JPanel implements ActionListener
       case EQUALS -> evaluateExpression();
       case CONJUGATE -> conjugate();
       case INVERSE -> invert();
+      case ">" -> {
+        NumberPad.changeText();
+        historyPanel.setCollapsed(!historyPanel.isCollapsed());
+        // PINPadWindow.setSize(700, 500);
+
+      }
+      case "<" -> {
+        NumberPad.changeText();
+        historyPanel.setCollapsed(!historyPanel.isCollapsed());
+        // PINPadWindow.setSize(380, 500);
+      }
       default -> handleInput(ac);
     }
     updateDisplay();
