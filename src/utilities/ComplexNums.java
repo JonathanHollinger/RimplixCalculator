@@ -142,6 +142,72 @@ public class ComplexNums implements Nums
 		}
 	}
 
+	public Nums exponentiate(final Nums other)
+	{
+		if (other == null)
+		{
+			return null;
+		}
+
+		// Simple Nums are Complex without Imaginary parts.
+		double valR = other.getVal();
+		double valI = (other instanceof ComplexNums) ? ((ComplexNums) other).getIConst()
+				: 0.0;
+
+		// z = a + bi
+		double a = this.getVal();
+		double b = this.getIConst();
+
+		// |z| and arg(z)
+		// |z| = sqrt(a^2 + b^2)
+		// arg(z) = atan2(b, a)
+		double mod = Math.hypot(a, b);
+		double arg = Math.atan2(b, a);
+
+		// log(z) = ln|z| + i * arg
+		double logR = Math.log(mod);
+		double logI = arg;
+
+		// w * log(z)
+		// Product of the Real and Imaginary numbers
+		double prodR = logR * valR - logI * valI;
+		double prodI = logI * valR + logR * valI;
+
+		// exp(prodR + i * prodI) = e^prodR * (cos(prodI) + i * sin(prodI))
+		double exp = Math.exp(prodR);
+		double newVal = exp * Math.cos(prodI);
+		double newMult = exp * Math.sin(prodI);
+
+		return new ComplexNums(newVal, newMult);
+	}
+
+	public Nums log(final Nums other)
+	{
+		if (other == null)
+		{
+			return null;
+		}
+
+		// Natural log of this: ln|z| + i * arg(z)
+		double a = this.getVal();
+		double b = this.getIConst();
+
+		// |z| and arg(z)
+		double mod1 = Math.hypot(a, b);
+		double arg1 = Math.atan2(b, a);
+		ComplexNums ln1 = new ComplexNums(Math.log(mod1), arg1);
+
+		double c = other.getVal();
+		double d = (other instanceof ComplexNums) ? ((ComplexNums) other).getIConst()
+				: 0.0;
+
+		double mod2 = Math.hypot(c, d);
+		double arg2 = Math.atan2(d, c);
+		ComplexNums ln2 = new ComplexNums(Math.log(mod2), arg2);
+
+		return ln1.div(ln2);
+	}
+
 	/**
 	 * basic getter.
 	 * 
