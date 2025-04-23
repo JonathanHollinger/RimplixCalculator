@@ -94,12 +94,19 @@ public class Display extends JPanel implements ActionListener
         NumberPad.changeText();
         historyPanel.setCollapsed(!historyPanel.isCollapsed());
         // PINPadWindow.setSize(700, 500);
-
+        for (Engine listener : historyListeners)
+        {
+          listener.resizeBig();;
+        }
       }
       case "<" -> {
         NumberPad.changeText();
         historyPanel.setCollapsed(!historyPanel.isCollapsed());
         // PINPadWindow.setSize(380, 500);
+        for (Engine listener : historyListeners)
+        {
+          listener.resizeSmall();
+        }
       }
       default -> handleInput(ac);
     }
@@ -412,5 +419,15 @@ public class Display extends JPanel implements ActionListener
           .setText(contents.contains("i") ? "<html>" + contents.replace("i", "<i>i</i>") + "</html>"
               : contents);
     }
+  }
+  
+  private void resizeBig()
+  {
+    setSize(700, 500);
+  }
+
+  private void resizeSmall()
+  {
+    setSize(380, 500);
   }
 }
