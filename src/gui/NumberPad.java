@@ -157,12 +157,12 @@ public class NumberPad extends JPanel
     addButton("i", 2, 4);
     addButton("=", 3, 4);
     addButton(".", 4, 4);
-    addButton("Conj", 0, 5);
-    addButton("Pol", 1, 5);
+    addButton("Conj", 5, 0);
+    addButton("Pol", 5, 1);
 //    addButton("CHG", 2, 5);
 //    addButton("CHG", 3, 5);
 //    addButton("CHG", 4, 5);
-    addSmallButton(">", 5, 2);
+    addSmallButton(">", 6, 2);
 
   }
   

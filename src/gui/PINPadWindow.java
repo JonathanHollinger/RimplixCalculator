@@ -32,7 +32,7 @@ public class PINPadWindow extends JFrame implements Engine
     setupLayout();
     pack();
     setResizable(true);
-    setSize(380, 500);
+    setSize(400, 500);
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     setTitle("RimpleX");
   }
@@ -192,12 +192,12 @@ public class PINPadWindow extends JFrame implements Engine
 
   public void resizeBig()
   {
-    setSize(700, 500);
+    setSize(730, 500);
   }
 
   public void resizeSmall()
   {
-    setSize(380, 500);
+    setSize(400, 500);
   }
 
   public void runComplexPlane()
