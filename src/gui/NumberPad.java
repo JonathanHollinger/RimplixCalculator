@@ -18,6 +18,10 @@ public class NumberPad extends JPanel
   private static final Font BUTTON_FONT = new Font("DejaVu Sans", Font.PLAIN, 12);
 
   ActionListener listener;
+  
+  static Boolean extended;
+  
+  static JButton open;
 
   /**
    * Default Constructor
@@ -27,6 +31,8 @@ public class NumberPad extends JPanel
     super();
 
     this.listener = listener;
+    
+    extended = false;
 
     // 0 means it needs no modifier, the shift down means it works when shift is held down.
     InputMap inputMap  = this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
@@ -99,11 +105,30 @@ public class NumberPad extends JPanel
     c.gridwidth = 2;
     c.gridheight = 1;
     add(button, c);
+  }
+  
+  private void addSmallButton (String text, int x, int y) {
+    open = new JButton(text);
+    open.setFont(BUTTON_FONT);
+    open.addActionListener(listener);
+    ActionMap actionMap = this.getActionMap();
+    actionMap.put("small", new ClickAction(open));
+    GridBagConstraints c = new GridBagConstraints();
+    c.gridx = x;
+    c.gridy = y;
+    c.gridwidth = 0;
+    c.weightx = 1.0;
+    c.weighty = 1.0;
+    c.fill = GridBagConstraints.NONE;
+    c.gridwidth = 1;
+    c.gridheight = 1;
+    add(open, c);
 
   }
 
   private void setupLayout()
   {
+    
 
     setLayout(new GridBagLayout());
     GridBagConstraints c = new GridBagConstraints();
@@ -117,7 +142,7 @@ public class NumberPad extends JPanel
     addButton("8", 1, 1);
     addButton("9", 2, 1);
     addButton("-", 3, 1);
-    // addButton("Inv", 4, 1);
+    addButton("Inv", 4, 1);
     addButton("4", 0, 2);
     addButton("5", 1, 2);
     addButton("6", 2, 2);
@@ -132,6 +157,22 @@ public class NumberPad extends JPanel
     addButton("i", 2, 4);
     addButton("=", 3, 4);
     addButton(".", 4, 4);
+    addButton("Conj", 0, 5);
+    addButton("Pol", 1, 5);
+//    addButton("CHG", 2, 5);
+//    addButton("CHG", 3, 5);
+//    addButton("CHG", 4, 5);
+    addSmallButton(">", 5, 2);
 
+  }
+  
+  static void changeText() {
+    if (extended) {
+      open.setText(">");
+      extended = false;
+    } else {
+      open.setText("<");
+      extended = true;
+    }
   }
 }
