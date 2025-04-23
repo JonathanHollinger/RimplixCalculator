@@ -16,6 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import gui.complexplane.ComplexPlaneGUI;
 import utilities.Check;
 import utilities.arithmetic.Evaluator;
 import utilities.arithmetic.Parser;
@@ -161,6 +162,7 @@ public class Display extends JPanel implements ActionListener
           }
           Evaluator evaluator = new Evaluator(tokens);
           expression += contents + " " + ac + " " + evaluator.result().toString();
+          ComplexPlaneGUI.setNum(evaluator.result());
           evaluatedExpression = true;
           contents = "";
           problem = "(" + evaluator.result().toString() + ")";
