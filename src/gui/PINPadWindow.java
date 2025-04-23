@@ -126,8 +126,10 @@ public class PINPadWindow extends JFrame implements Engine
     JMenuItem printItem = new JMenuItem("Print History");
     printItem.addActionListener(e -> showPrintDialog());
     fileMenu.add(printItem);
-
+    
     JMenuItem aboutItem = new JMenuItem(LanguageManager.getAboutMenuText());
+    aboutItem.addActionListener(e -> showAboutDialog());
+    
     JMenuItem helpItem = new JMenuItem(LanguageManager.getHelpMenuText());
     helpItem.addActionListener(e -> runHelp());
 
@@ -167,7 +169,15 @@ public class PINPadWindow extends JFrame implements Engine
       e.printStackTrace();
     }
   }
-
+  
+  /**
+   * Shows the About dialog.
+   */
+  private void showAboutDialog() {
+    AboutDialog aboutDialog = new AboutDialog(this);
+    aboutDialog.showDialog();
+  }
+  
   private void showPrintDialog()
   {
     JTextArea textArea = new JTextArea(display.getPrintableHistory());
