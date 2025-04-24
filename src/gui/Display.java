@@ -89,6 +89,7 @@ public class Display extends JPanel implements ActionListener
       case "." -> {
         if (canAddDecimalPoint())
           contents += ".";
+          problem += ".";
       }
       case I -> appendToProblem(I);
       case EQUALS -> evaluateExpression();
@@ -179,61 +180,75 @@ public class Display extends JPanel implements ActionListener
     try
     {
       String originalInput = problem;
-      String originalPolar = null;
+      String processedInput = problem;
 
-      if (problem.trim().matches("^-?\\d+(\\.\\d+)?\\s*∠\\s*-?\\d+(\\.\\d+)?\\s*°$"))
+      String polarRegex = "(\\d+(\\.\\d+)?)(\\s*)∠(\\s*-?\\d+(\\.\\d+)?)(\\s*)°";
+      java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(polarRegex);
+      java.util.regex.Matcher matcher = pattern.matcher(processedInput);
+
+      StringBuffer sb = new StringBuffer();
+      while (matcher.find())
       {
-        try
-        {
-          String[] parts = problem.replace("°", "").split("∠");
-          double r = Double.parseDouble(parts[0].trim());
-          double thetaDeg = Double.parseDouble(parts[1].trim());
-          double thetaRad = Math.toRadians(thetaDeg);
-          double real = r * Math.cos(thetaRad);
-          double imag = r * Math.sin(thetaRad);
-          if (Math.abs(real) < 1e-10) real = 0;
-          if (Math.abs(imag) < 1e-10) imag = 0;
+        double r = Double.parseDouble(matcher.group(1));
+        double theta = Double.parseDouble(matcher.group(4));
+        double thetaRad = Math.toRadians(theta);
+        double real = r * Math.cos(thetaRad);
+        double imag = r * Math.sin(thetaRad);
+        if (Math.abs(real) < 1e-10) real = 0;
+        if (Math.abs(imag) < 1e-10) imag = 0;
 
-          System.out.printf("Parsed polar input: r=%.2f, θ=%.2f°, real=%.2f, imag=%.2f%n",
-            r, thetaDeg, real, imag);
+        String replacement = String.format(Locale.US, "%.6f%s%.6fi",
+          real, (imag >= 0 ? "+" : ""), imag);
 
-          problem = real + (imag >= 0 ? "+" : "") + imag + "i";
-          contents = problem;
-          originalPolar = parts[0].trim() + "∠" + parts[1].trim() + "°";
-        }
-        catch (Exception e)
-        {
-          System.err.println("Failed to parse polar input: " + e.getMessage());
-          return;
-        }
+        matcher.appendReplacement(sb, replacement);
       }
+      matcher.appendTail(sb);
+      processedInput = sb.toString();
 
-      problem = problem
+      processedInput = processedInput
         .replaceAll("(?<=\\W|^)-i", "-1i")
         .replaceAll("(?<=\\W|^)\\+i", "+1i")
         .replaceAll("(?<=\\W|^)i", "1i");
 
-      if (!problem.contains("i") && problem.startsWith("-"))
-        problem = "0" + problem;
+      if (!processedInput.contains("i") && processedInput.startsWith("-"))
+        processedInput = "0" + processedInput;
+      
+      if (processedInput.endsWith("."))
+    	processedInput = processedInput.substring(0, processedInput.length() - 1);
 
-      System.out.println("Final problem: " + problem);
-
-      List<Token> tokens = Parser.parse(new BufferedReader(new StringReader(problem)));
+      if (processedInput.matches(".*[+\\-x÷]$"))
+        processedInput = processedInput.substring(0, processedInput.length() - 1);
+    	
+      List<Token> tokens = Parser.parse(new BufferedReader(new StringReader(processedInput)));
       Evaluator evaluator = new Evaluator(tokens);
       var result = evaluator.result();
+      
+      if (result instanceof ComplexNums)
+      {
+        ComplexNums c = (ComplexNums) result;
+        double r = c.getVal();
+        double i = c.getIConst();
 
-      String resultStr = isPolarMode ? formatAsPolar(result) : formatAsRectangular(result);
-      String lhs = (originalPolar != null) ? originalPolar : originalInput;
-      String displayKey = lhs + " = " + resultStr;
+        if (Math.abs(r) < 1e-10) r = 0;
+        if (Math.abs(i) < 1e-10) i = 0;
 
-      history.put(displayKey, problem);
+        result = new ComplexNums(r, i);
+      }
+
+      String resultStr = isPolarMode
+        ? formatAsPolar(result)
+        : formatAsRectangular(result);
+
+      String displayKey = originalInput + " = " + resultStr;
+
+      history.put(displayKey, originalInput); // preserve user's input as typed (e.g. 3.5×6)
       for (Engine listener : historyListeners)
         listener.onHistoryUpdated(new ArrayList<>(history.keySet()));
 
       expression = displayKey;
       ComplexPlaneGUI.setNum(result);
-      String chainInput = formatAsRectangular(result);
-      problem = chainInput;
+
+      problem = resultStr;
       contents = "";
       evaluatedExpression = true;
     }
@@ -350,10 +365,19 @@ public class Display extends JPanel implements ActionListener
   {
     if (contents.isEmpty())
       return true;
-    int lastOp = Math.max(Math.max(contents.lastIndexOf('+'), contents.lastIndexOf('-')),
-        Math.max(contents.lastIndexOf('x'), contents.lastIndexOf('÷')));
-    String numberPart = contents.substring(lastOp + 1);
-    return !numberPart.contains(".") && !numberPart.contains(I);
+
+    int lastPlus = contents.lastIndexOf('+');
+    int lastMinus = contents.lastIndexOf('-');
+    int lastMult = contents.lastIndexOf('x');
+    int lastDiv = contents.lastIndexOf('÷');
+    int lastAngle = contents.lastIndexOf('∠');
+    int lastDegree = contents.lastIndexOf('°');
+
+    int lastOp = Math.max(Math.max(Math.max(lastPlus, lastMinus), Math.max(lastMult, lastDiv)),
+                          Math.max(lastAngle, lastDegree));
+
+    String currentToken = contents.substring(lastOp + 1);
+    return !currentToken.contains(".");
   }
 
   private void toggleSign()
@@ -484,6 +508,9 @@ public class Display extends JPanel implements ActionListener
     ComplexNums c = (ComplexNums) complex;
     double real = c.getVal();
     double imag = c.getIConst();
+    
+    if (Math.abs(real) < 1e-10) real = 0;
+    if (Math.abs(imag) < 1e-10) imag = 0;
 
     double r = Math.hypot(real, imag);
     double theta = Math.toDegrees(Math.atan2(imag, real));
