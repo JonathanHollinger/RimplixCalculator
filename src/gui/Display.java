@@ -197,7 +197,7 @@ public class Display extends JPanel implements ActionListener
         if (Math.abs(real) < 1e-10) real = 0;
         if (Math.abs(imag) < 1e-10) imag = 0;
 
-        String replacement = String.format(Locale.US, "%.6f%s%.6fi",
+        String replacement = String.format(Locale.US, "(%.6f%s%.6fi)",
           real, (imag >= 0 ? "+" : ""), imag);
 
         matcher.appendReplacement(sb, replacement);
@@ -220,8 +220,10 @@ public class Display extends JPanel implements ActionListener
         processedInput = processedInput.substring(0, processedInput.length() - 1);
     	
       List<Token> tokens = Parser.parse(new BufferedReader(new StringReader(processedInput)));
+
       Evaluator evaluator = new Evaluator(tokens);
       var result = evaluator.result();
+
       
       if (result instanceof ComplexNums)
       {
@@ -241,7 +243,7 @@ public class Display extends JPanel implements ActionListener
 
       String displayKey = originalInput + " = " + resultStr;
 
-      history.put(displayKey, originalInput); // preserve user's input as typed (e.g. 3.5×6)
+      history.put(displayKey, originalInput);
       for (Engine listener : historyListeners)
         listener.onHistoryUpdated(new ArrayList<>(history.keySet()));
 
@@ -497,6 +499,27 @@ public class Display extends JPanel implements ActionListener
   private void toggleMode()
   {
     isPolarMode = !isPolarMode;
+    
+    if (evaluatedExpression && !problem.isEmpty())
+    {
+        try
+        {
+            List<Token> tokens = Parser.parse(new BufferedReader(new StringReader(problem)));
+            Evaluator evaluator = new Evaluator(tokens);
+            var result = evaluator.result();
+
+            String resultStr = isPolarMode
+                ? formatAsPolar(result)
+                : formatAsRectangular((ComplexNums) result);
+
+            expression = problem + " = " + resultStr;
+        }
+        catch (Exception e)
+        {
+            System.err.println("Error reformatting previous result: " + e.getMessage());
+        }
+    }
+    
     updateDisplay();
   }
   
@@ -518,9 +541,21 @@ public class Display extends JPanel implements ActionListener
       theta += 360;
 
     r = Math.round(r * 1000.0) / 1000.0;
+    theta = snapToNiceAngle(theta);
     theta = Math.round(theta * 100.0) / 100.0;
 
-    return r + "∠" + theta + "°";
+    return String.format("%.2f∠%.2f°", r, theta);
+  }
+  
+  private double snapToNiceAngle(double theta)
+  {
+      double[] snapAngles = { 0, 30, 45, 60, 90, 120, 135, 150, 180, 210, 225, 240, 270, 300, 315, 330, 360 };
+      for (double target : snapAngles)
+      {
+          if (Math.abs(theta - target) < 0.05)
+              return target;
+      }
+      return theta;
   }
 
   private void updateDisplay()

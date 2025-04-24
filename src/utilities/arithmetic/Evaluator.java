@@ -24,8 +24,8 @@ public class Evaluator
 
 	private ComplexNums evaluate()
 	{
-		List<Token> rpn = toRPN(tokens); // Convert infix to postfix
-		return evaluateRPN(rpn); // Evaluate postfix expression
+		List<Token> rpn = toRPN(tokens);
+		return evaluateRPN(rpn);
 	}
 
 	private List<Token> toRPN(List<Token> tokens)
@@ -41,11 +41,18 @@ public class Evaluator
 				output.add(token);
 				break;
 
+			case LOG:
+			case LOG2:
+			case SQRT:
+				operators.push(token);
+				break;
+
 			case ADD:
 			case SUBTRACT:
 			case MULTIPLY:
 			case DIVIDE:
 			case NEGATE:
+			case EXPONENT:
 				while (!operators.isEmpty()
 						&& isHigherPrecedence(operators.peek(), token))
 				{
@@ -64,10 +71,30 @@ public class Evaluator
 				{
 					output.add(operators.pop());
 				}
+
 				if (!operators.isEmpty()
 						&& operators.peek().type == Parser.Expression.LEFT_PAREN)
 				{
-					operators.pop(); // Discard left parenthesis
+					operators.pop();
+				}
+
+				if (!operators.isEmpty())
+				{
+					Parser.Expression t = operators.peek().type;
+					if (t == Parser.Expression.LOG || t == Parser.Expression.SQRT
+							|| t == Parser.Expression.EXPONENT)
+					{
+						output.add(operators.pop());
+					}
+				}
+				break;
+
+			case COMMA:
+				// pop operators until left paren, so next argument is separate
+				while (!operators.isEmpty()
+						&& operators.peek().type != Parser.Expression.LEFT_PAREN)
+				{
+					output.add(operators.pop());
 				}
 				break;
 
@@ -124,6 +151,30 @@ public class Evaluator
 				stack.push(new ComplexNums(-x.getVal(), -x.getIConst()));
 				break;
 
+			case LOG:
+				// natural log: pop one
+				ComplexNums v1 = stack.pop();
+				stack.push((ComplexNums) v1.log(new ComplexNums(Math.E, 0)));
+				break;
+
+			case LOG2:
+				// arbitrary log: pop base then value
+				ComplexNums logBase = stack.pop();
+				ComplexNums logVal = stack.pop();
+				stack.push((ComplexNums) logVal.log(logBase));
+				break;
+
+			case SQRT:
+				ComplexNums in = stack.pop();
+				stack.push((ComplexNums) in.sqrt());
+				break;
+
+			case EXPONENT:
+				ComplexNums exponent = stack.pop();
+				ComplexNums base = stack.pop();
+				stack.push((ComplexNums) base.exponentiate(exponent));
+				break;
+
 			case ADD:
 			case SUBTRACT:
 			case MULTIPLY:
@@ -169,7 +220,12 @@ public class Evaluator
 	{
 		switch (type)
 		{
+		case LOG:
+		case SQRT:
+			return 5;
 		case NEGATE:
+			return 4;
+		case EXPONENT:
 			return 3;
 		case MULTIPLY:
 		case DIVIDE:

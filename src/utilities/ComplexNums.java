@@ -208,6 +208,11 @@ public class ComplexNums implements Nums
 		return ln1.div(ln2);
 	}
 
+	public Nums sqrt()
+	{
+		return this.exponentiate(new ComplexNums(0.5, 0.0));
+	}
+
 	/**
 	 * basic getter.
 	 * 
@@ -227,63 +232,63 @@ public class ComplexNums implements Nums
 	@Override
 	public String toString()
 	{
-	  Double i = getIConst();
-	  Double r = getVal();
+		Double i = getIConst();
+		Double r = getVal();
 
-	  if (i > 0)
-	  {
-	    if (r == 0)
-	    {
-	      return i.toString() + "i";
-	    }
-	    return r.toString() + "+" + i.toString() + "i";
-	  }
-	  else if (i < 0)
-	  {
-	    if (r == 0)
-	    {
-	      return i.toString() + "i";
-	    }
-	    i *= -1;
-	    return r.toString() + "-" + i.toString() + "i";
-	  }
+		if (i > 0)
+		{
+			if (r == 0)
+			{
+				return i.toString() + "i";
+			}
+			return r.toString() + "+" + i.toString() + "i";
+		} else if (i < 0)
+		{
+			if (r == 0)
+			{
+				return i.toString() + "i";
+			}
+			i *= -1;
+			return r.toString() + "-" + i.toString() + "i";
+		}
 
-	  return r.toString();
+		return r.toString();
 	}
-	
-	public ComplexNums conjugate() {
-	    return new ComplexNums(this.val, -this.iMult);
+
+	public ComplexNums conjugate()
+	{
+		return new ComplexNums(this.val, -this.iMult);
 	}
-	
-	public ComplexNums invert() {
-	    double denominator = val * val + iMult * iMult;
-	    double real = val / denominator;
-	    double imag = -iMult / denominator;
-	    return new ComplexNums(real, imag);
+
+	public ComplexNums invert()
+	{
+		double denominator = val * val + iMult * iMult;
+		double real = val / denominator;
+		double imag = -iMult / denominator;
+		return new ComplexNums(real, imag);
 	}
-	
+
 	/**
-	 * Returns a string representation with 2 decimal places,
-	 * formatted according to FormOfResult spec.
+	 * Returns a string representation with 2 decimal places, formatted according to
+	 * FormOfResult spec.
 	 */
 	public String formattedString()
 	{
-	    double i = getIConst();
-	    double r = getVal();
+		double i = getIConst();
+		double r = getVal();
 
-	    String rStr = String.format("%.2f", r);
-	    String iStr = String.format("%.2f", Math.abs(i));
+		String rStr = String.format("%.2f", r);
+		String iStr = String.format("%.2f", Math.abs(i));
 
-	    if (i > 0)
-	    {
-	        return r == 0 ? iStr + "i" : rStr + "+" + iStr + "i";
-	    }
-	    else if (i < 0)
-	    {
-	        return r == 0 ? "-" + iStr + "i" : rStr + "-" + iStr + "i";
-	    }
+		if (i > 0)
+		{
+			return r == 0 ? iStr + "i" : rStr + "+" + iStr + "i";
+		} else if (i < 0)
+		{
+			return r == 0 ? "-" + iStr + "i" : rStr + "-" + iStr + "i";
+		}
 
-	    return rStr;
+		return rStr;
 	}
-	
+
 }
