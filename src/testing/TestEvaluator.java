@@ -183,4 +183,203 @@ public class TestEvaluator
 		}
 	}
 
+	// ---- EXPONENTIATION ----
+
+	@Test
+	public void testRealExponentiation() throws Exception
+	{
+		String expr = "2 ^ 5";
+		BufferedReader reader = new BufferedReader(new StringReader(expr));
+
+		try
+		{
+			List<Token> tokens = Parser.parse(reader);
+			Evaluator evaluator = new Evaluator(tokens);
+			ComplexNums result = evaluator.result();
+
+			assertEquals(0.0, result.getIConst(), 0.0001); // Imaginary part
+			assertEquals(32.0, result.getVal(), 0.0001); // Real part
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			assert false : "Exception occurred during complex number evaluation";
+		}
+	}
+
+	@Test
+	public void testComplexToRealExponentiation() throws Exception
+	{
+		String expr = "(1 + i) ^ 2";
+		BufferedReader reader = new BufferedReader(new StringReader(expr));
+
+		try
+		{
+			List<Token> tokens = Parser.parse(reader);
+			Evaluator evaluator = new Evaluator(tokens);
+			ComplexNums result = evaluator.result();
+
+			assertEquals(2.0, result.getIConst(), 0.0001); // Imaginary part
+			assertEquals(0.0, result.getVal(), 0.0001); // Real part
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			assert false : "Exception occurred during complex number evaluation";
+		}
+	}
+
+	@Test
+	public void testComplexToComplexExponentiation() throws Exception
+	{
+		String expr = "i ^ i";
+		BufferedReader reader = new BufferedReader(new StringReader(expr));
+
+		try
+		{
+			List<Token> tokens = Parser.parse(reader);
+			Evaluator evaluator = new Evaluator(tokens);
+			ComplexNums result = evaluator.result();
+
+			assertEquals(0.0, result.getIConst(), 0.0001); // Imaginary part
+			assertEquals(Math.exp(-Math.PI / 2), result.getVal(), 0.0001); // Real part
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			assert false : "Exception occurred during complex number evaluation";
+		}
+	}
+
+	// ---- SQUARE ROOT ----
+
+	@Test
+	public void testSqrtReal() throws Exception
+	{
+		String expr = "sqrt(16)";
+		BufferedReader reader = new BufferedReader(new StringReader(expr));
+
+		try
+		{
+			List<Token> tokens = Parser.parse(reader);
+			Evaluator evaluator = new Evaluator(tokens);
+			ComplexNums result = evaluator.result();
+
+			assertEquals(0.0, result.getIConst(), 0.0001); // Imaginary part
+			assertEquals(4.0, result.getVal(), 0.0001); // Real part
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			assert false : "Exception occurred during complex number evaluation";
+		}
+	}
+
+	@Test
+	public void testSqrtComplex() throws Exception
+	{
+		String expr = "sqrt(i)";
+		BufferedReader reader = new BufferedReader(new StringReader(expr));
+
+		try
+		{
+			List<Token> tokens = Parser.parse(reader);
+			Evaluator evaluator = new Evaluator(tokens);
+			ComplexNums result = evaluator.result();
+
+			assertEquals(Math.sqrt(2) / 2, result.getIConst(), 0.0001); // Imaginary part
+			assertEquals(Math.sqrt(2) / 2, result.getVal(), 0.0001); // Real part
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			assert false : "Exception occurred during complex number evaluation";
+		}
+	}
+
+	// ---- LOGARITHMS ----
+
+	@Test
+	public void testNaturalLogReal() throws Exception
+	{
+		String expr = "log(10)";
+		BufferedReader reader = new BufferedReader(new StringReader(expr));
+
+		try
+		{
+			List<Token> tokens = Parser.parse(reader);
+			Evaluator evaluator = new Evaluator(tokens);
+			ComplexNums result = evaluator.result();
+
+			assertEquals(0.0, result.getIConst(), 0.0001); // Imaginary part
+			assertEquals(Math.log(10), result.getVal(), 0.0001); // Real part
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			assert false : "Exception occurred during complex number evaluation";
+		}
+	}
+
+	@Test
+	public void testNaturalLogComplex() throws Exception
+	{
+		String expr = "log(i)";
+		BufferedReader reader = new BufferedReader(new StringReader(expr));
+
+		try
+		{
+			List<Token> tokens = Parser.parse(reader);
+			Evaluator evaluator = new Evaluator(tokens);
+			ComplexNums result = evaluator.result();
+
+			assertEquals(Math.PI / 2, result.getIConst(), 0.0001); // Imaginary part
+			assertEquals(0.0, result.getVal(), 0.0001); // Real part
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			assert false : "Exception occurred during complex number evaluation";
+		}
+	}
+
+	@Test
+	public void testLogBaseReal() throws Exception
+	{
+		String expr = "log(8, 2)";
+		BufferedReader reader = new BufferedReader(new StringReader(expr));
+
+		try
+		{
+			List<Token> tokens = Parser.parse(reader);
+			Evaluator evaluator = new Evaluator(tokens);
+			ComplexNums result = evaluator.result();
+
+			assertEquals(0.0, result.getIConst(), 0.0001); // Imaginary part
+			assertEquals(3.0, result.getVal(), 0.0001); // Real part
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			assert false : "Exception occurred during complex number evaluation";
+		}
+	}
+
+	@Test
+	public void testLogBaseComplex() throws Exception
+	{
+		String expr = "log(i, 1 + i)";
+		BufferedReader reader = new BufferedReader(new StringReader(expr));
+
+		try
+		{
+			List<Token> tokens = Parser.parse(reader);
+			Evaluator evaluator = new Evaluator(tokens);
+			ComplexNums result = evaluator.result();
+
+			ComplexNums ln1 = new ComplexNums(0, Math.PI / 2);
+			ComplexNums ln2 = new ComplexNums(Math.log(Math.hypot(1, 1)), Math.PI / 4);
+			ComplexNums expected = (ComplexNums) ln1.div(ln2);
+
+			assertEquals(expected.getIConst(), result.getIConst(), 0.0001); // Imaginary
+																			// part
+			assertEquals(expected.getVal(), result.getVal(), 0.0001); // Real part
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			assert false : "Exception occurred during complex number evaluation";
+		}
+	}
 }
