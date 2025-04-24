@@ -47,7 +47,7 @@ public class Display extends JPanel implements ActionListener
 
   private final Map<String, String> history = new LinkedHashMap<>();
   private final List<Engine> historyListeners = new ArrayList<>();
-  
+
   CollapsiblePanel historyPanel;
 
   public Display(CollapsiblePanel historyPanel)
@@ -62,14 +62,14 @@ public class Display extends JPanel implements ActionListener
     inputLabel = new JLabel(LanguageManager.getEnterComplexNumberText(), SwingConstants.RIGHT);
     inputLabel.setFont(new Font("Arial", Font.BOLD, 20));
     inputLabel.setForeground(Color.GRAY);
-    
+
     ImageIcon img = new ImageIcon("src/media/logoRimplex.png");
     imageLabel = new JLabel(img, SwingConstants.LEFT);
-    
+
     add(imageLabel, BorderLayout.NORTH);
     add(expressionLabel, BorderLayout.CENTER);
     add(inputLabel, BorderLayout.SOUTH);
-    
+
     this.historyPanel = historyPanel;
   }
 
@@ -89,7 +89,7 @@ public class Display extends JPanel implements ActionListener
       case "." -> {
         if (canAddDecimalPoint())
           contents += ".";
-          problem += ".";
+        problem += ".";
       }
       case I -> appendToProblem(I);
       case EQUALS -> evaluateExpression();
@@ -198,7 +198,7 @@ public class Display extends JPanel implements ActionListener
         if (Math.abs(imag) < 1e-10) imag = 0;
 
         String replacement = String.format(Locale.US, "(%.6f%s%.6fi)",
-          real, (imag >= 0 ? "+" : ""), imag);
+            real, (imag >= 0 ? "+" : ""), imag);
 
         matcher.appendReplacement(sb, replacement);
       }
@@ -206,25 +206,25 @@ public class Display extends JPanel implements ActionListener
       processedInput = sb.toString();
 
       processedInput = processedInput
-        .replaceAll("(?<=\\W|^)-i", "-1i")
-        .replaceAll("(?<=\\W|^)\\+i", "+1i")
-        .replaceAll("(?<=\\W|^)i", "1i");
+          .replaceAll("(?<=\\W|^)-i", "-1i")
+          .replaceAll("(?<=\\W|^)\\+i", "+1i")
+          .replaceAll("(?<=\\W|^)i", "1i");
 
       if (!processedInput.contains("i") && processedInput.startsWith("-"))
         processedInput = "0" + processedInput;
-      
+
       if (processedInput.endsWith("."))
-    	processedInput = processedInput.substring(0, processedInput.length() - 1);
+        processedInput = processedInput.substring(0, processedInput.length() - 1);
 
       if (processedInput.matches(".*[+\\-x÷]$"))
         processedInput = processedInput.substring(0, processedInput.length() - 1);
-    	
+
       List<Token> tokens = Parser.parse(new BufferedReader(new StringReader(processedInput)));
 
       Evaluator evaluator = new Evaluator(tokens);
       var result = evaluator.result();
 
-      
+
       if (result instanceof ComplexNums)
       {
         ComplexNums c = (ComplexNums) result;
@@ -238,8 +238,8 @@ public class Display extends JPanel implements ActionListener
       }
 
       String resultStr = isPolarMode
-        ? formatAsPolar(result)
-        : formatAsRectangular(result);
+          ? formatAsPolar(result)
+              : formatAsRectangular(result);
 
       String displayKey = originalInput + " = " + resultStr;
 
@@ -261,7 +261,7 @@ public class Display extends JPanel implements ActionListener
 
     updateDisplay();
   }
-  
+
   private String formatAsRectangular(ComplexNums result)
   {
     double real = result.getVal();
@@ -283,11 +283,11 @@ public class Display extends JPanel implements ActionListener
 
   private void handleInput(String ac)
   {
-	if (ac.contains("∠") && (!contents.isEmpty() || !problem.isEmpty()))
-	{
-	  System.err.println("Cannot mix polar input with a rectangular expression.");
-	  return;
-	}
+    if (ac.contains("∠") && (!contents.isEmpty() || !problem.isEmpty()))
+    {
+      System.err.println("Cannot mix polar input with a rectangular expression.");
+      return;
+    }
     if (ac.length() == 1 && Character.isDigit(ac.charAt(0)))
     {
       if (evaluatedExpression)
@@ -376,7 +376,7 @@ public class Display extends JPanel implements ActionListener
     int lastDegree = contents.lastIndexOf('°');
 
     int lastOp = Math.max(Math.max(Math.max(lastPlus, lastMinus), Math.max(lastMult, lastDiv)),
-                          Math.max(lastAngle, lastDegree));
+        Math.max(lastAngle, lastDegree));
 
     String currentToken = contents.substring(lastOp + 1);
     return !currentToken.contains(".");
@@ -405,7 +405,7 @@ public class Display extends JPanel implements ActionListener
       contents = contents.startsWith("-") ? contents.substring(1) : "-" + contents;
     }
   }
-  
+
   private void conjugate()
   {
     if (contents.isEmpty())
@@ -413,9 +413,9 @@ public class Display extends JPanel implements ActionListener
     try
     {
       String parsedInput = contents
-        .replaceAll("(?<=\\W|^)i", "1i")
-        .replaceAll("\\+i", "+1i")
-        .replaceAll("-i", "-1i");
+          .replaceAll("(?<=\\W|^)i", "1i")
+          .replaceAll("\\+i", "+1i")
+          .replaceAll("-i", "-1i");
 
       if (parsedInput.startsWith("-"))
         parsedInput = "0" + parsedInput;
@@ -449,7 +449,7 @@ public class Display extends JPanel implements ActionListener
 
     updateDisplay();
   }
-  
+
   private void invert()
   {
     if (contents.isEmpty())
@@ -457,9 +457,9 @@ public class Display extends JPanel implements ActionListener
     try
     {
       String parsedInput = contents
-        .replaceAll("(?<=\\W|^)i", "1i")
-        .replaceAll("\\+i", "+1i")
-        .replaceAll("-i", "-1i");
+          .replaceAll("(?<=\\W|^)i", "1i")
+          .replaceAll("\\+i", "+1i")
+          .replaceAll("-i", "-1i");
 
       if (parsedInput.startsWith("-"))
         parsedInput = "0" + parsedInput;
@@ -493,36 +493,36 @@ public class Display extends JPanel implements ActionListener
 
     updateDisplay();
   }
-  
+
   private boolean isPolarMode = false;
-  
+
   private void toggleMode()
   {
     isPolarMode = !isPolarMode;
-    
+
     if (evaluatedExpression && !problem.isEmpty())
     {
-        try
-        {
-            List<Token> tokens = Parser.parse(new BufferedReader(new StringReader(problem)));
-            Evaluator evaluator = new Evaluator(tokens);
-            var result = evaluator.result();
+      try
+      {
+        List<Token> tokens = Parser.parse(new BufferedReader(new StringReader(problem)));
+        Evaluator evaluator = new Evaluator(tokens);
+        var result = evaluator.result();
 
-            String resultStr = isPolarMode
-                ? formatAsPolar(result)
+        String resultStr = isPolarMode
+            ? formatAsPolar(result)
                 : formatAsRectangular((ComplexNums) result);
 
-            expression = problem + " = " + resultStr;
-        }
-        catch (Exception e)
-        {
-            System.err.println("Error reformatting previous result: " + e.getMessage());
-        }
+        expression = problem + " = " + resultStr;
+      }
+      catch (Exception e)
+      {
+        System.err.println("Error reformatting previous result: " + e.getMessage());
+      }
     }
-    
+
     updateDisplay();
   }
-  
+
   private String formatAsPolar(Nums complex)
   {
     if (!(complex instanceof ComplexNums))
@@ -531,7 +531,7 @@ public class Display extends JPanel implements ActionListener
     ComplexNums c = (ComplexNums) complex;
     double real = c.getVal();
     double imag = c.getIConst();
-    
+
     if (Math.abs(real) < 1e-10) real = 0;
     if (Math.abs(imag) < 1e-10) imag = 0;
 
@@ -546,16 +546,16 @@ public class Display extends JPanel implements ActionListener
 
     return String.format("%.2f∠%.2f°", r, theta);
   }
-  
+
   private double snapToNiceAngle(double theta)
   {
-      double[] snapAngles = { 0, 30, 45, 60, 90, 120, 135, 150, 180, 210, 225, 240, 270, 300, 315, 330, 360 };
-      for (double target : snapAngles)
-      {
-          if (Math.abs(theta - target) < 0.05)
-              return target;
-      }
-      return theta;
+    double[] snapAngles = { 0, 30, 45, 60, 90, 120, 135, 150, 180, 210, 225, 240, 270, 300, 315, 330, 360 };
+    for (double target : snapAngles)
+    {
+      if (Math.abs(theta - target) < 0.05)
+        return target;
+    }
+    return theta;
   }
 
   private void updateDisplay()
@@ -572,9 +572,9 @@ public class Display extends JPanel implements ActionListener
     inputLabel.setForeground(Color.BLACK);
     inputLabel.setText(contents.contains("i")
         ? "<html>" + contents.replace("i", "<i>i</i>") + "</html>"
-        : contents);
+            : contents);
   }
-  
+
   private void resizeBig()
   {
     NumberPad.changeText();
@@ -596,5 +596,5 @@ public class Display extends JPanel implements ActionListener
       listener.resizeSmall();
     }
   }
-  
+
 }

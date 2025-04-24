@@ -18,9 +18,9 @@ public class NumberPad extends JPanel
   private static final Font BUTTON_FONT = new Font("DejaVu Sans", Font.PLAIN, 12);
 
   ActionListener listener;
-  
+
   static Boolean extended;
-  
+
   static JButton open;
 
   /**
@@ -31,7 +31,7 @@ public class NumberPad extends JPanel
     super();
 
     this.listener = listener;
-    
+
     extended = false;
 
     // 0 means it needs no modifier, the shift down means it works when shift is held down.
@@ -106,7 +106,7 @@ public class NumberPad extends JPanel
     c.gridheight = 1;
     add(button, c);
   }
-  
+
   private void addSmallButton (String text, int x, int y) {
     open = new JButton(text);
     open.setFont(BUTTON_FONT);
@@ -128,7 +128,7 @@ public class NumberPad extends JPanel
 
   private void setupLayout()
   {
-    
+
 
     setLayout(new GridBagLayout());
     GridBagConstraints c = new GridBagConstraints();
@@ -161,11 +161,11 @@ public class NumberPad extends JPanel
     addButton("Pol", 5, 1);
     addButton("∠", 5, 2);
     addButton("°", 5, 3);
-//    addButton("CHG", 4, 5);
+    //    addButton("CHG", 4, 5);
     addSmallButton(">", 6, 2);
 
   }
-  
+
   static void changeText() {
     if (extended) {
       open.setText(">");

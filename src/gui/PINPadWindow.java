@@ -202,9 +202,9 @@ public class PINPadWindow extends JFrame implements Engine
         count++;
         if (count >= 730) {
           return;
-      }
-      setSize(count, 500);
-        
+        }
+        setSize(count, 500);
+
       }
     });
     resizer.start();
@@ -222,9 +222,9 @@ public class PINPadWindow extends JFrame implements Engine
         count--;
         if (count <= 400) {
           return;
-      }
-      setSize(count, 500);
-        
+        }
+        setSize(count, 500);
+
       }
     });
     resizer.start();

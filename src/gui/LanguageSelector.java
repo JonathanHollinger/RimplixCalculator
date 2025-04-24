@@ -19,56 +19,56 @@ import javax.swing.SwingConstants;
  * A dialog window for selecting the application language.
  */
 public class LanguageSelector extends JDialog {
-    
+
   /** Serial version UID. */
   private static final long serialVersionUID = 1L;
-    
+
   /**
-     * Available languages enum.
-     */
+   * Available languages enum.
+   */
   public enum Language {
-        /** English language. */
-        ENGLISH, 
-        /** Spanish language. */
-        SPANISH, 
-        /** French language. */
-        FRENCH
+    /** English language. */
+    ENGLISH, 
+    /** Spanish language. */
+    SPANISH, 
+    /** French language. */
+    FRENCH
   }
-    
+
   /** Selected language (default to English). */
   private Language selectedLanguage = Language.ENGLISH;
-    
+
   /** Translation maps for title text. */
   private static final Map<Language, String> TITLE_TEXT = new HashMap<>();
-    
+
   /** Translation maps for confirm button text. */
   private static final Map<Language, String> CONFIRM_TEXT = new HashMap<>();
-    
+
   /** Title label display. */
   private JLabel titleLabel;
-    
+
   /** Confirm button. */
   private JButton confirmButton;
-    
+
   /** Language combo box for selection. */
   private JComboBox<String> languageComboBox;
-    
+
   /** Flag to track if the dialog was confirmed. */
   private boolean confirmed = false;
-    
+
   // Initialize translations
   static {
     // Title translations
     TITLE_TEXT.put(Language.ENGLISH, "Select your language");
     TITLE_TEXT.put(Language.SPANISH, "Seleccione su idioma");
     TITLE_TEXT.put(Language.FRENCH, "Sélectionnez votre langue");
-        
+
     // Confirm button translations
     CONFIRM_TEXT.put(Language.ENGLISH, "Confirm");
     CONFIRM_TEXT.put(Language.SPANISH, "Confirmar");
     CONFIRM_TEXT.put(Language.FRENCH, "Confirmer");
   }
-    
+
   /**
    * Constructor for the language selector dialog.
    * 
@@ -82,20 +82,20 @@ public class LanguageSelector extends JDialog {
     setResizable(false);
     setLocationRelativeTo(parent); // Center dialog on parent
   }
-    
+
   /**
    * Set up the dialog layout.
    */
   private void setupLayout() {
     setTitle("RimpleX");
-        
+
     JPanel panel = new JPanel(new GridBagLayout());
     panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        
+
     GridBagConstraints gbc = new GridBagConstraints();
     gbc.insets = new Insets(5, 5, 5, 5);
     gbc.fill = GridBagConstraints.HORIZONTAL;
-        
+
     // Title label
     titleLabel = new JLabel(TITLE_TEXT.get(Language.ENGLISH));
     titleLabel.setFont(new Font("Arial", Font.BOLD, 14));
@@ -104,7 +104,7 @@ public class LanguageSelector extends JDialog {
     gbc.gridy = 0;
     gbc.gridwidth = 2;
     panel.add(titleLabel, gbc);
-        
+
     // Language dropdown
     String[] languages = {"English", "Español", "Français"};
     languageComboBox = new JComboBox<>(languages);
@@ -112,7 +112,7 @@ public class LanguageSelector extends JDialog {
     gbc.gridy = 1;
     gbc.gridwidth = 2;
     panel.add(languageComboBox, gbc);
-        
+
     // Add listener to update UI text when language is changed
     languageComboBox.addActionListener(e -> {
       int selectedIndex = languageComboBox.getSelectedIndex();
@@ -132,7 +132,7 @@ public class LanguageSelector extends JDialog {
       }
       updateUiText();
     });
-        
+
     // Confirm button
     confirmButton = new JButton(CONFIRM_TEXT.get(Language.ENGLISH));
     confirmButton.addActionListener(e -> {
@@ -144,10 +144,10 @@ public class LanguageSelector extends JDialog {
     gbc.gridwidth = 2;
     gbc.insets = new Insets(15, 5, 5, 5);
     panel.add(confirmButton, gbc);
-        
+
     getContentPane().add(panel);
   }
-    
+
   /**
    * Update the UI text based on the selected language.
    */
@@ -155,21 +155,21 @@ public class LanguageSelector extends JDialog {
     titleLabel.setText(TITLE_TEXT.get(selectedLanguage));
     confirmButton.setText(CONFIRM_TEXT.get(selectedLanguage));
   }
-    
+
   /**
-  * Get the selected language.
-     * 
-     * @return The selected language
-     */
+   * Get the selected language.
+   * 
+   * @return The selected language
+   */
   public Language getSelectedLanguage() {
     return selectedLanguage;
   }
-    
+
   /**
-     * Show the dialog and return the selected language.
-     * 
-     * @return The selected language, or null if dialog was closed without confirming
-     */
+   * Show the dialog and return the selected language.
+   * 
+   * @return The selected language, or null if dialog was closed without confirming
+   */
   public Language showDialog() {
     setVisible(true);
     // Dialog is modal, so execution will block until it's closed
