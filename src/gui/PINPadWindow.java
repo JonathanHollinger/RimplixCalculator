@@ -8,6 +8,7 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -30,7 +31,7 @@ public class PINPadWindow extends JFrame implements Engine
   {
     super();
     setupLayout();
-    pack();
+    // pack();
     setResizable(true);
     setSize(400, 500);
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -126,10 +127,8 @@ public class PINPadWindow extends JFrame implements Engine
     JMenuItem printItem = new JMenuItem("Print History");
     printItem.addActionListener(e -> showPrintDialog());
     fileMenu.add(printItem);
-    
+
     JMenuItem aboutItem = new JMenuItem(LanguageManager.getAboutMenuText());
-    aboutItem.addActionListener(e -> showAboutDialog());
-    
     JMenuItem helpItem = new JMenuItem(LanguageManager.getHelpMenuText());
     helpItem.addActionListener(e -> runHelp());
 
@@ -169,15 +168,7 @@ public class PINPadWindow extends JFrame implements Engine
       e.printStackTrace();
     }
   }
-  
-  /**
-   * Shows the About dialog.
-   */
-  private void showAboutDialog() {
-    AboutDialog aboutDialog = new AboutDialog(this);
-    aboutDialog.showDialog();
-  }
-  
+
   private void showPrintDialog()
   {
     JTextArea textArea = new JTextArea(display.getPrintableHistory());
@@ -202,12 +193,42 @@ public class PINPadWindow extends JFrame implements Engine
 
   public void resizeBig()
   {
-    setSize(730, 500);
+    Timer resizer = new Timer(2, new ActionListener() {
+      int count = 400;
+
+      @Override
+      public void actionPerformed(ActionEvent e)
+      {
+        count++;
+        if (count >= 730) {
+          return;
+      }
+      setSize(count, 500);
+        
+      }
+    });
+    resizer.start();
+    // setSize(730, 500);
   }
 
   public void resizeSmall()
   {
-    setSize(400, 500);
+    Timer resizer = new Timer(2, new ActionListener() {
+      int count = 730;
+
+      @Override
+      public void actionPerformed(ActionEvent e)
+      {
+        count--;
+        if (count <= 400) {
+          return;
+      }
+      setSize(count, 500);
+        
+      }
+    });
+    resizer.start();
+    // setSize(400, 500);
   }
 
   public void runComplexPlane()
