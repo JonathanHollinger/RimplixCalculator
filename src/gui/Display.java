@@ -497,6 +497,27 @@ public class Display extends JPanel implements ActionListener
   private void toggleMode()
   {
     isPolarMode = !isPolarMode;
+    
+    if (evaluatedExpression && !problem.isEmpty())
+    {
+        try
+        {
+            List<Token> tokens = Parser.parse(new BufferedReader(new StringReader(problem)));
+            Evaluator evaluator = new Evaluator(tokens);
+            var result = evaluator.result();
+
+            String resultStr = isPolarMode
+                ? formatAsPolar(result)
+                : formatAsRectangular((ComplexNums) result);
+
+            expression = problem + " = " + resultStr;
+        }
+        catch (Exception e)
+        {
+            System.err.println("Error reformatting previous result: " + e.getMessage());
+        }
+    }
+    
     updateDisplay();
   }
   
@@ -520,7 +541,7 @@ public class Display extends JPanel implements ActionListener
     r = Math.round(r * 1000.0) / 1000.0;
     theta = Math.round(theta * 100.0) / 100.0;
 
-    return r + "∠" + theta + "°";
+    return String.format("%.2f∠%.2f°", r, theta);
   }
 
   private void updateDisplay()
