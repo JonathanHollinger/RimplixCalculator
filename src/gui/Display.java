@@ -283,11 +283,6 @@ public class Display extends JPanel implements ActionListener
 
   private void handleInput(String ac)
   {
-    if (ac.contains("∠") && (!contents.isEmpty() || !problem.isEmpty()))
-    {
-      System.err.println("Cannot mix polar input with a rectangular expression.");
-      return;
-    }
     if (ac.length() == 1 && Character.isDigit(ac.charAt(0)))
     {
       if (evaluatedExpression)
@@ -382,30 +377,24 @@ public class Display extends JPanel implements ActionListener
     return !currentToken.contains(".");
   }
 
-  private void toggleSign()
-  {
-    if (contents.isEmpty() || contents.equals("0"))
-      return;
-    if (contents.contains(I))
-    {
-      if (contents.startsWith("(") && contents.endsWith(")"))
-      {
-        String inner = contents.substring(1, contents.length() - 1);
-        contents = "(-" + inner + ")";
-        if (contents.startsWith("(--"))
-          contents = "(" + contents.substring(3);
-      }
-      else
-      {
-        contents = contents.startsWith("-") ? contents.substring(1) : "-" + contents;
-      }
-    }
-    else
-    {
-      contents = contents.startsWith("-") ? contents.substring(1) : "-" + contents;
-    }
-  }
+  private void toggleSign() {
+	  if (contents.isEmpty() || contents.equals("0"))
+	    return;
 
+	  if (contents.contains(I)) {
+	    if (contents.startsWith("(") && contents.endsWith(")")) {
+	      String inner = contents.substring(1, contents.length() - 1);
+	      contents = "(-" + inner + ")";
+	      if (contents.startsWith("(--"))
+	        contents = "(" + contents.substring(3);
+	    } else {
+	      contents = contents.startsWith("-") ? contents.substring(1) : "-" + contents;
+	    }
+	  } else {
+	    contents = contents.startsWith("-") ? contents.substring(1) : "-" + contents;
+	  }
+	}
+  
   private void conjugate()
   {
     if (contents.isEmpty())
@@ -436,10 +425,6 @@ public class Display extends JPanel implements ActionListener
         problem = output;
         contents = "";
         evaluatedExpression = true;
-      }
-      else
-      {
-        System.err.println("Conjugate Failed: Result not a ComplexNums.");
       }
     }
     catch (Exception e)
@@ -480,10 +465,6 @@ public class Display extends JPanel implements ActionListener
         problem = output;
         contents = "";
         evaluatedExpression = true;
-      }
-      else
-      {
-        System.err.println("Inverse Failed: Result not a ComplexNums.");
       }
     }
     catch (Exception e)
@@ -541,21 +522,9 @@ public class Display extends JPanel implements ActionListener
       theta += 360;
 
     r = Math.round(r * 1000.0) / 1000.0;
-    theta = snapToNiceAngle(theta);
     theta = Math.round(theta * 100.0) / 100.0;
 
     return String.format("%.2f∠%.2f°", r, theta);
-  }
-
-  private double snapToNiceAngle(double theta)
-  {
-    double[] snapAngles = { 0, 30, 45, 60, 90, 120, 135, 150, 180, 210, 225, 240, 270, 300, 315, 330, 360 };
-    for (double target : snapAngles)
-    {
-      if (Math.abs(theta - target) < 0.05)
-        return target;
-    }
-    return theta;
   }
 
   private void updateDisplay()
